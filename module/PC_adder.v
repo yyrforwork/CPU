@@ -5,7 +5,7 @@
 `define _PC_ADDER_
 `include "define.v"
 
-module PC_adder(
+module PC_Adder(
         input wire[`PC_BUS] old_pc,
         output reg[`PC_BUS] new_pc
     );

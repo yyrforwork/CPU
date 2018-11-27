@@ -13,7 +13,7 @@ module sram(
         output reg [`ADDR_BUS] sram_addr,// sram address
         output reg             sram_en,  // sram chip enable [CE]
         output reg             sram_oe,  // sram output enable [OE]
-        output reg             sram_rw,  // sram write enable [WE]
+        output reg             sram_we,  // sram write enable [WE]
         
         output     [`DATA_BUS] data_o,   // data out
         input      [`DATA_BUS] data_i,   // data in
@@ -22,72 +22,59 @@ module sram(
         input                  en,       // enable
     );
 
-reg [2:0] state;
+reg state;
 
-parameter op_rd = 1'b0,
-          op_wr = 1'b1,
-          s_empty = 3'b000,
-          r_begin = 3'b001,
-          r_enddo = 3'b010,
-          w_begin = 3'b101,
-          w_enddo = 3'b110;
+parameter S_EMPTY = 1'b0,
+          S_ENDDO = 1'b1;
 
 assign data_o = sram_data;
-assign sram_data = (~sram_en && (op==op_wr)) ? data_i : 'bz;
+assign sram_data = (~sram_en && (op==`RAM_WR)) ? data_i : 'bz;
 
 initial begin
-    state = s_empty;
+    state = S_EMPTY;
     sram_en = 1'b1;
     sram_oe = 1'b1;
-    sram_rw = 1'b1;
+    sram_we = 1'b1;
     sram_addr = 18'h0;
 end
 
 always@(posedge clk_50MHz or negedge rst) begin
     if(!rst)
-        state = s_empty;
+        state <= S_EMPTY;
     else begin
     case(state)
         // sram action state is empty
-        s_empty: begin
+        S_EMPTY: begin
             if (en) begin
-                state = (op==op_rd) ? r_begin : w_begin;
+                if(op==`RAM_RD) begin
+                    sram_addr <= addr;
+                    sram_en <= 1'b0;
+                    sram_oe <= 1'b0;
+                end
+                else begin
+                    sram_addr <= addr;
+                    sram_en <= 1'b0;
+                    sram_we <= 1'b0;
+                end
+                state <= S_ENDDO;
             end
         end
         
-        // prepare reading sram
-        r_begin: begin
-            sram_addr = addr;
-            sram_en = 1'b0;
-            sram_oe = 1'b0;
-            state = r_enddo;
-        end
-        
-        // read sram
-        r_enddo: begin
-            sram_en = 1'b1;
-            sram_oe = 1'b1;
-            state = s_empty;
-        end
-        
-        // prepare writing sram
-        w_begin: begin
-            sram_addr = addr;
-            sram_en = 1'b0;
-            sram_rw = 1'b0;
-            state = w_enddo;
-        end
-        
-        // write sram
-        w_enddo: begin
-            sram_en = 1'b1;
-            sram_rw = 1'b1;
-            state = s_empty;
+        S_ENDDO: begin
+            if(op==`RAM_RD) begin
+                sram_en <= 1'b0;
+                sram_oe <= 1'b0;
+            end
+            else begin
+                sram_en <= 1'b1;
+                sram_we <= 1'b1;
+            end
+            state <= S_EMPTY;
         end
 
         // default action
         default:
-            state = s_empty;
+            state <= S_EMPTY;
     endcase
     end
 end
