@@ -4,10 +4,10 @@
 `else
 `define _DEFINE_
 
+`define PC_BUS 17:0
+`define INST_BUS 15:0
 `define ADDR_BUS 17:0
 `define DATA_BUS 15:0
-
-`define PC_BUS 17:0
 
 // alu op
 `define OP_BUS 3:0
