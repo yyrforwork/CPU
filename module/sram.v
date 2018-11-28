@@ -28,7 +28,7 @@ parameter S_EMPTY = 1'b0,
           S_ENDDO = 1'b1;
 
 assign data_o = sram_data;
-assign sram_data = (~sram_en && (op==`RAM_WR)) ? data_i : 'bz;
+assign sram_data = (~sram_en && (op==`RAM_OP_WR)) ? data_i : 'bz;
 
 initial begin
     state = S_EMPTY;
@@ -46,7 +46,7 @@ always@(posedge clk_50MHz or negedge rst) begin
         // sram action state is empty
         S_EMPTY: begin
             if (en) begin
-                if(op==`RAM_RD) begin
+                if(op==`RAM_OP_RD) begin
                     sram_addr <= addr;
                     sram_en <= 1'b0;
                     sram_oe <= 1'b0;
@@ -61,7 +61,7 @@ always@(posedge clk_50MHz or negedge rst) begin
         end
         
         S_ENDDO: begin
-            if(op==`RAM_RD) begin
+            if(op==`RAM_OP_RD) begin
                 sram_en <= 1'b0;
                 sram_oe <= 1'b0;
             end
