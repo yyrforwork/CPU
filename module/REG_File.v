@@ -60,6 +60,7 @@ begin
             `REG_OP_IH:  reg_IH <= wb_data;
             `REG_OP_RA:  reg_RA <= wb_data;
             `REG_OP_REG: regs[wb_addr] <= wb_data;
+            `REG_OP_NOP: ;
         endcase
     end
 end
