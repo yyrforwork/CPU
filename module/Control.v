@@ -17,10 +17,12 @@ module Control(
         output reg[`REG_OP_BUS]     REG_op,
         output reg[`WB_DATA_OP_BUS] wb_data_op,
         output reg[`WB_ADDR_OP_BUS] wb_addr_op,
-        
-        output reg jump_op,
+
+        output reg                  RAM_en,
+        output reg                  RAM_op,
+        output reg[`JUMP_EN_OP_BUS] jump_en_op
+        output reg[`IM_OP_BUS]      im_op,
         output reg ram_op,
-        
     );
 
 always @ (*) begin
@@ -36,6 +38,9 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
+            im_op <= IM_OP_S_E_7_0;
 
         end
 
@@ -46,6 +51,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RY;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -56,6 +63,8 @@ always @ (*) begin
             REG_op <= `REG_OP_SP;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -66,6 +75,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -76,6 +87,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RZ;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -86,6 +99,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -96,6 +111,8 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_EN;
 
         end
 
@@ -106,6 +123,8 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_ZEROJ;
 
         end
 
@@ -116,6 +135,8 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NZEROJ;
 
         end
 
@@ -126,6 +147,8 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_ZEROJ;
 
         end
 
@@ -136,6 +159,8 @@ always @ (*) begin
             REG_op <= `REG_OP_T;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -146,6 +171,8 @@ always @ (*) begin
             REG_op <= `REG_OP_T;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -156,6 +183,8 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_EN;
 
         end
 
@@ -166,6 +195,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -176,6 +207,9 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_MEM;
             wb_addr_op <= `WB_ADDR_OP_RY;
+            RAM_en <= `RAM_ENABLE;
+            RAM_op <= `RAM_OP_RD;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -186,6 +220,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_MEM;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -196,6 +232,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_IH;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -206,6 +244,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_PC;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -215,6 +255,8 @@ always @ (*) begin
             REG_op <= `REG_OP_IH;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -225,7 +267,9 @@ always @ (*) begin
             REG_op <= `REG_OP_SP;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_NOP;
-            
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
+
         end
 
         `INST_NOP: begin
@@ -235,7 +279,9 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
-            
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
+
         end
 
         `INST_OR: begin
@@ -245,7 +291,9 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
-            
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
+
         end
 
         `INST_SLL: begin
@@ -255,6 +303,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -265,6 +315,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RY;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -275,6 +327,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -285,6 +339,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RX;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -295,6 +351,8 @@ always @ (*) begin
             REG_op <= `REG_OP_REG;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_RZ;
+            RAM_en <= `RAM_DISABLE;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -305,6 +363,9 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_ENABLE;
+            RAM_op <= `RAM_OP_WR;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -315,6 +376,9 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_ENABLE;
+            RAM_op <= `RAM_OP_WR;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
 
@@ -325,6 +389,9 @@ always @ (*) begin
             REG_op <= `REG_OP_NOP;
             wb_data_op <= `WB_DATA_OP_NOP;
             wb_addr_op <= `WB_ADDR_OP_NOP;
+            RAM_en <= `RAM_ENABLE;
+            RAM_op <= `RAM_OP_WR;
+            jump_en_op <= `JUMP_EN_OP_NOP;
 
         end
     endcase

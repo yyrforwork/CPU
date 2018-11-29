@@ -14,7 +14,7 @@
 
 `define FIRST_PC  16'b0000_0000_0000_0000
 
-// reg file 
+// reg file
 `define REG_ADDR_BUS 2:0
 `define REG_OP_BUS 2:0
 `define REG_OP_T   3'b000
@@ -25,8 +25,10 @@
 `define REG_OP_NOP 3'b101
 
 // sram op
-`define RAM_OP_RD 0
-`define RAM_OP_WR 1
+`define RAM_OP_RD   1'b0
+`define RAM_OP_WR   1'b1
+`define RAM_ENABLE  1'b1
+`define RAM_DISABLE 1'b0
 
 // sign extend
 `define _5_bit_1_  5'b1_1111
