@@ -4,7 +4,7 @@
 `else
 `define _DEFINE_
 
-`define PC_BUS 17:0
+`define PC_BUS 15:0
 `define INST_BUS 15:0
 `define ADDR_BUS 17:0
 `define DATA_BUS 15:0
@@ -68,6 +68,15 @@
 `define INST_SW_RS  5'b01100 /* 010 ***-***** */ /* G1 */
 `define INST_SW_SP  5'b11010 /* *** ***-***** */
 
+// im mux
+`define IM_OP_BUS 2:0
+`define IM_OP_NOP      3'b000
+`define IM_OP_S_E_3_0  3'b001
+`define IM_OP_S_E_4_0  3'b010
+`define IM_OP_S_E_7_0  3'b011
+`define IM_OP_S_E_10_0 3'b100
+`define IM_OP_Z_E_7_0  3'b101
+
 // ALU A mux
 `define ALU_A_OP_BUS 2:0
 `define ALU_A_OP_T    3'b000
@@ -98,6 +107,25 @@
 `define ALU_OP_SRA  4'b1100
 `define ALU_OP_SRL  4'b1101
 `define ALU_OP_NOP  4'b1110
+
+// jump control
+`define CLEAR_ENABLE  1'b1;
+`define CLEAR_DISABLE 1'b0;
+
+// jump data
+`define JUMP_DATA_BUS 1:0
+`define JUMP_DATA_NOP  2'b00
+`define JUMP_DATA_ALU  2'b01
+`define JUMP_DATA_JANS 2'b10
+
+// jump enable 
+`define JUMP_EN_OP_BUS 1:0
+`define JUMP_EN_OP_EN     2'b00
+`define JUMP_EN_OP_ZEROJ  2'b01
+`define JUMP_EN_OP_NZEROJ 2'b10
+`define JUMP_EN_OP_NOP    2'b11
+`define PC_JUMP_ENABLE    1'b1
+`define PC_JUMP_DISABLE   1'b0
 
 // WB Data Mux
 `define WB_DATA_OP_BUS 2:0
