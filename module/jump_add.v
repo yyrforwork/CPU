@@ -5,7 +5,7 @@
 `define _JUMP_ADD_
 `include "define.v"
 
-module JUMP_ADD(
+module Jump_Add(
         input     [`PC_BUS]   old_pc,
         input     [`DATA_BUS] im,
         output reg[`PC_BUS]   new_pc

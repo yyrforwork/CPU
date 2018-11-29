@@ -5,7 +5,7 @@
 `define _EXTENDER_
 `include "define.v"
 
-module extender(
+module Extender(
         input  [`INST_BUS]  inst,
 
         output [`DATA_BUS]  z_e_7_0,

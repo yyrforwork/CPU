@@ -6,12 +6,12 @@
 `include "define.v"
 
 module PC_Adder(
-        input wire[`PC_BUS] old_pc,
-        output reg[`PC_BUS] new_pc
+        input     [`PC_BUS] old_PC,
+        output reg[`PC_BUS] new_PC
     );
 
 always @(*)begin
-    new_pc <= old_pc + 1'b1;
+    new_PC <= old_PC + 1'b1;
 end
 
 endmodule

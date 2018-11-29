@@ -8,17 +8,16 @@
 module Control(
         input                       rst,
         input                       clk_50MHz,
-
         input     [`INST_BUS]       inst,
-        
+
         output reg[`ALU_OP_BUS]     ALU_op,
         output reg[`ALU_A_OP_BUS]   ALU_A_op,
         output reg[`ALU_B_OP_BUS]   ALU_B_op,
-
+        
         output reg[`REG_OP_BUS]     REG_op,
         output reg[`WB_DATA_OP_BUS] wb_data_op,
         output reg[`WB_ADDR_OP_BUS] wb_addr_op,
-
+        
         output reg jump_op,
         output reg ram_op,
         

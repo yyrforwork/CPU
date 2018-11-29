@@ -12,8 +12,11 @@
 `define DATA_ZERO 16'b0000_0000_0000_0000
 `define ADDR_ZERO 18'b00_0000_0000_0000_0000
 
+`define FIRST_PC  16'b0000_0000_0000_0000
+
 // reg file 
 `define REG_ADDR_BUS 2:0
+`define REG_OP_BUS 2:0
 `define REG_OP_T   3'b000
 `define REG_OP_SP  3'b001
 `define REG_OP_IH  3'b010
@@ -126,6 +129,10 @@
 `define JUMP_EN_OP_NOP    2'b11
 `define PC_JUMP_ENABLE    1'b1
 `define PC_JUMP_DISABLE   1'b0
+
+// pause control
+`define PAUSE_ENABLE 1'b1;
+`define PAUSE_ENABLE 1'b0;
 
 // WB Data Mux
 `define WB_DATA_OP_BUS 2:0

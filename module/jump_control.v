@@ -5,22 +5,14 @@
 `define _JUMP_CONTROL_
 `include "define.v"
 
-module JUMP_CONTRAL(
+module Jump_Control(
         input      rst,
         input      pc_jump_en,
         output reg clear
     );
 
-always @(*) begin
-    if (~rst) begin
-        clear <= `CLEAR_DISABLE;            
-    end
-    else if (pc_jump_en == `PC_JUMP) begin
-        clear <= `CLEAR_ENABLE;
-    end else begin
-        clear <= `CLEAR_DISABLE;
-    end
-end
+assign clear = (pc_jump_en == `PC_JUMP) ? `CLEAR_ENABLE : `CLEAR_DISABLE;
 
 endmodule
+
 `endif

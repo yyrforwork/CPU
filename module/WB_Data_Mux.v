@@ -5,7 +5,7 @@
 `define _WB_DATA_MUX_
 `include "define.v"
 
-module WB_Mux(
+module WB_Data_Mux(
         input     [`DATA_BUS]  alu_data,
         input     [`DATA_BUS]  mem_data,
         input     [`ADDR_BUS]  wb_PC,

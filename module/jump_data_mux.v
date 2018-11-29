@@ -5,7 +5,7 @@
 `define _JUNP_DATA_MUX_
 `include "define.v"
 
-module JUMP_DATA_MUX(
+module Jump_Data_Mux(
         input     [`PC_BUS]        jump_answer,
         input     [`DATA_BUS]      alu_answer,
         input     [`JUMP_DATA_BUS] jump_data_op,

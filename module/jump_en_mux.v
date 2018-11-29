@@ -5,7 +5,7 @@
 `define _JUMP_EN_MUX_
 `include "define.v"
 
-module JUMP_EN_MUX(
+module Jump_En_Mux(
         input                       zero,    // equal zero when alu_A == 0
         input     [`JUMP_EN_OP_BUS] jump_en_op,
         output reg                  jump_en
