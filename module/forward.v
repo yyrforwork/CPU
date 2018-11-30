@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 
-`ifdef _FORWARD_CONTRAL_
+`ifdef _FORWARD_
 `else
-`define _FORWARD_CONTRAL_
+`define _FORWARD_
 `include "define.v"
 
-module FORWARD_CONTRAL(
+module Forward(
         input      [`PC_BUS]          emo_PC_wb_data,
         input      [`PC_BUS]          mwo_PC_wb_data,
         input      [`DATA_BUS]        emo_IH_wb_data,

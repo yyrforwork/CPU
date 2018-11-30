@@ -27,6 +27,7 @@ module Control(
     );
 
 reg[`INST_CTL_OP] inst_ctl_op;
+
 always @ (*) begin
     if (~rst) begin
         inst_ctl_op = `INST_CTL_OP;
