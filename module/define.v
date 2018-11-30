@@ -52,74 +52,88 @@
 `define INST_ADDIU  5'b01001 /* *** ***-***** */
 `define INST_ADDIU3 5'b01000 /* *** *** 0**** */
 `define INST_ADDSP3 5'b00000 /* *** ***-***** */
+
+`define INST_GROUP1 5'b01100
 `define INST_ADDSP  5'b01100 /* 011 ***-***** */ /* G1 */
+`define INST_BTEQZ  5'b01100 /* 000 *** ***** */ /* G1 */
+`define INST_MTSP   5'b01100 /* 100 *** 00000 */ /* G1 */
+`define INST_SW_RS  5'b01100 /* 010 ***-***** */ /* G1 */
+
+`define INST_GROUP2 5'b11100
 `define INST_ADDU   5'b11100 /* *** *** ***01 */ /* G2 */
+`define INST_SUBU   5'b11100 /* *** *** ***11 */ /* G2 */
+
+`define INST_GROUP3 5'b11101
 `define INST_AND    5'b11101 /* *** *** 01100 */ /* G3 */
+`define INST_CMP    5'b11101 /* *** *** 01010 */ /* G3 */
+`define INST_JR     5'b11101 /* *** 000 00000 */ /* G3 */
+`define INST_MFPC   5'b11101 /* *** 010 00000 */ /* G3 */
+`define INST_OR     5'b11101 /* *** *** 01101 */ /* G3 */
+`define INST_SLLV   5'b11101 /* *** *** 00100 */ /* G3 */
+
 `define INST_B      5'b00010 /* ***-***-***** */
 `define INST_BEQZ   5'b00100 /* *** ***-***** */
 `define INST_BNEZ   5'b00101 /* *** ***-***** */
-`define INST_BTEQZ  5'b01100 /* 000 *** ***** */ /* G1 */
-`define INST_CMP    5'b11101 /* *** *** 01010 */ /* G3 */
 `define INST_CMPI   5'b01110 /* *** ***-***** */
-`define INST_JR     5'b11101 /* *** 000 00000 */ /* G3 */
 `define INST_LI     5'b01101 /* *** ***-***** */
 `define INST_LW     5'b10011 /* *** *** ***** */
 `define INST_LW_SP  5'b10010 /* *** ***-***** */
+
+`define INST_GROUP4 5'b11110
 `define INST_MFIH   5'b11110 /* *** 000 00000 */ /* G4 */
-`define INST_MFPC   5'b11101 /* *** 010 00000 */ /* G3 */
 `define INST_MTIH   5'b11110 /* *** 000 00001 */ /* G4 */
-`define INST_MTSP   5'b01100 /* 100 *** 00000 */ /* G1 */
+
 `define INST_NOP    5'b00001 /* 000 000 00000 */
-`define INST_OR     5'b11101 /* *** *** 01101 */ /* G3 */
+
+`define INST_GROUP5 5'b00110
 `define INST_SLL    5'b00110 /* *** *** ***00 */ /* G5 */
-`define INST_SLLV   5'b11101 /* *** *** 00100 */ /* G3 */
 `define INST_SRA    5'b00110 /* *** *** ***11 */ /* G5 */
 `define INST_SRL    5'b00110 /* *** *** ***10 */ /* G5 */
-`define INST_SUBU   5'b11100 /* *** *** ***11 */ /* G2 */
+
 `define INST_SW     5'b11011 /* *** *** ***** */
-`define INST_SW_RS  5'b01100 /* 010 ***-***** */ /* G1 */
 `define INST_SW_SP  5'b11010 /* *** ***-***** */
 
-`define INST_CTL_OP 5:0
-`define INST_CTL_ADDIU  5'b01001
-`define INST_CTL_ADDIU3 5'b01000
-`define INST_CTL_ADDSP3 5'b00000
-`define INST_CTL_ADDSP  5'b01100
-`define INST_CTL_ADDU   5'b11100
-`define INST_CTL_AND    5'b11101
-`define INST_CTL_B      5'b00010
-`define INST_CTL_BEQZ   5'b00100
-`define INST_CTL_BNEZ   5'b00101
-`define INST_CTL_BTEQZ  5'b01100
-`define INST_CTL_CMP    5'b11101
-`define INST_CTL_CMPI   5'b01110
-`define INST_CTL_JR     5'b11101
-`define INST_CTL_LI     5'b01101
-`define INST_CTL_LW     5'b10011
-`define INST_CTL_LW_SP  5'b10010
-`define INST_CTL_MFIH   5'b11110
-`define INST_CTL_MFPC   5'b11101
-`define INST_CTL_MTIH   5'b11110
-`define INST_CTL_MTSP   5'b01100
-`define INST_CTL_NOP    5'b00001
-`define INST_OR     5'b11101
-`define INST_SLL    5'b00110
-`define INST_SLLV   5'b11101
-`define INST_SRA    5'b00110
-`define INST_SRL    5'b00110
-`define INST_SUBU   5'b11100
-`define INST_SW     5'b11011
-`define INST_SW_RS  5'b01100
-`define INST_SW_SP  5'b11010
+// inst control op
+`define INST_CTL_OP 4:0
+`define INST_CTL_ADDIU  5'b00001
+`define INST_CTL_ADDIU3 5'b00010
+`define INST_CTL_ADDSP3 5'b00011
+`define INST_CTL_ADDSP  5'b00100
+`define INST_CTL_ADDU   5'b00101
+`define INST_CTL_AND    5'b00110
+`define INST_CTL_B      5'b00111
+`define INST_CTL_BEQZ   5'b01001
+`define INST_CTL_BNEZ   5'b01010
+`define INST_CTL_BTEQZ  5'b01011
+`define INST_CTL_CMP    5'b01100
+`define INST_CTL_CMPI   5'b01101
+`define INST_CTL_JR     5'b01110
+`define INST_CTL_LI     5'b01111
+`define INST_CTL_LW     5'b10000
+`define INST_CTL_LW_SP  5'b10001
+`define INST_CTL_MFIH   5'b10010
+`define INST_CTL_MFPC   5'b10011
+`define INST_CTL_MTIH   5'b10100
+`define INST_CTL_MTSP   5'b10101
+`define INST_CTL_NOP    5'b10110
+`define INST_CTL_OR     5'b10111
+`define INST_CTL_SLL    5'b11000
+`define INST_CTL_SLLV   5'b11001
+`define INST_CTL_SRA    5'b11010
+`define INST_CTL_SRL    5'b11011
+`define INST_CTL_SUBU   5'b11100
+`define INST_CTL_SW     5'b11101
+`define INST_CTL_SW_RS  5'b11110
+`define INST_CTL_SW_SP  5'b11111
 
 // im mux
 `define IM_OP_BUS 2:0
 `define IM_OP_NOP      3'b000
-`define IM_OP_s_e_3_0  3'b001
-`define IM_OP_s_e_4_0  3'b010
-`define IM_OP_s_e_7_0  3'b011
-`define IM_OP_s_e_10_0 3'b100
-`define IM_OP_z_e_7_0  3'b101
+`define IM_OP_S_E_3_0  3'b001
+`define IM_OP_S_E_4_0  3'b010
+`define IM_OP_S_E_7_0  3'b011
+`define IM_OP_S_E_10_0 3'b100
+`define IM_OP_Z_E_7_0  3'b101
 
 // ALU A mux
 `define ALU_A_OP_BUS 2:0
@@ -172,8 +186,8 @@
 `define PC_JUMP_DISABLE   1'b0
 
 // pause control
-`define PAUSE_ENABLE 1'b1
-`define PAUSE_ENABLE 1'b0
+`define PAUSE_ENABLE  1'b1
+`define PAUSE_DISABLE 1'b0
 
 // WB Data Mux
 `define WB_DATA_OP_BUS 2:0

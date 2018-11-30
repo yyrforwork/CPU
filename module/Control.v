@@ -29,21 +29,62 @@ module Control(
 reg[`INST_CTL_OP] inst_ctl_op;
 always @ (*) begin
     if (~rst) begin
-        ALU_op <= `ALU_OP_NOP;
-        ALU_A_op <= `ALU_A_OP_NOP;
-        ALU_B_op <= `ALU_B_OP_NOP;
-        REG_op <= `REG_OP_NOP;
-        wb_data_op <= `WB_DATA_OP_NOP;
-        wb_addr_op <= `WB_ADDR_OP_NOP;
-        RAM_en <= `RAM_DISABLE;
-        jump_en_op <= `JUMP_EN_OP_NOP;
-        jump_data_op <= `JUMP_DATA_NOP;
-        im_op <= `IM_OP_NOP;
-        ram_data_op <= RAM_DATA_OP_NOP;
+        inst_ctl_op = `INST_CTL_OP;
     end else begin
-
+    // load control op
     case(inst[`INST_OP])
-        `INST_ADDIU: begin
+        `INST_ADDIU:  inst_ctl_op <= `INST_CTL_ADDIU;
+        `INST_ADDIU3: inst_ctl_op <= `INST_CTL_ADDIU3;
+        `INST_ADDSP3: inst_ctl_op <= `INST_CTL_ADDSP3;
+        `INST_GROUP1:
+            begin case(inst[10:8])
+                3'b011: inst_ctl_op <= `INST_CTL_ADDSP;
+                3'b000: inst_ctl_op <= `INST_CTL_BTEQZ;
+                3'b100: inst_ctl_op <= `INST_CTL_MTSP;
+                3'b010: inst_ctl_op <= `INST_CTL_SW_RS;
+            endcase end
+        `INST_GROUP2:
+            begin case(inst[1:0])
+                2'b01: inst_ctl_op <= INST_CTL_ADDU;
+                2'b11: inst_ctl_op <= INST_CTL_SUBU;
+            endcase end
+        `INST_GROUP3:
+            begin case(inst[4:0])
+                5'b01100: inst_ctl_op <= INST_CTL_AND;
+                5'b01010: inst_ctl_op <= INST_CTL_CMP;
+                5'b00000: 
+                    begin case(inst[7:5])
+                        3'b000: inst_ctl_op <= INST_CTL_JR;
+                        3'b010: inst_ctl_op <= INST_CTL_MFPC;
+                5'b01101: inst_ctl_op <= INST_CTL_OR;
+                5'b00100: inst_ctl_op <= INST_CTL_SLLV;
+            endcase end
+        `INST_B:      inst_ctl_op <= `INST_CTL_ADDIU;
+        `INST_BEQZ:   inst_ctl_op <= `INST_CTL_BEQZ;
+        `INST_BNEZ:   inst_ctl_op <= `INST_CTL_BNEZ;
+        `INST_CMPI:   inst_ctl_op <= `INST_CTL_CMPI;
+        `INST_LI:     inst_ctl_op <= `INST_CTL_LI;
+        `INST_LW:     inst_ctl_op <= `INST_CTL_LW;
+        `INST_LW_SP:  inst_ctl_op <= `INST_CTL_LW_SP;
+        `INST_GROUP4:
+            begin case(inst[0])
+                1'b0: inst_ctl_op <= `INST_CTL_MFIH;
+                1'b1: inst_ctl_op <= `INST_CTL_MTIH;
+            endcase end
+        `INST_NOP:     inst_ctl_op <= `INST_CTL_NOP;
+        `INST_GROUP5:
+            begin case(inst[1:0])
+                2'b00: inst_ctl_op <= `INST_CTL_SLL;
+                2'b11: inst_ctl_op <= `INST_CTL_SRA;
+                2'b10: inst_ctl_op <= `INST_CTL_SRL;
+            endcase end
+        `INST_SW:     inst_ctl_op <= `INST_CTL_SW;
+        `INST_SW_SP:  inst_ctl_op <= `INST_CTL_SW_SP;
+    endcase
+
+    // arrange every operation signal
+    case(inst_ctl_op)
+        `INST_CTL_ADDIU: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -57,7 +98,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_ADDIU3: begin
+        `INST_CTL_ADDIU3: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -71,7 +112,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_ADDSP: begin
+        `INST_CTL_ADDSP: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_SP;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -85,7 +126,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_ADDSP3: begin
+        `INST_CTL_ADDSP3: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_SP;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -99,7 +140,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_ADDU: begin
+        `INST_CTL_ADDU: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -113,7 +154,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_AND: begin
+        `INST_CTL_AND: begin
             ALU_op <= `ALU_OP_AND;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -127,7 +168,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_B: begin
+        `INST_CTL_B: begin
             ALU_op <= `ALU_OP_NOP;
             ALU_A_op <= `ALU_A_OP_NOP;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -141,7 +182,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_BEQZ: begin
+        `INST_CTL_BEQZ: begin
             ALU_op <= `ALU_OP_NOP;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -155,7 +196,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_BNEZ: begin
+        `INST_CTL_BNEZ: begin
             ALU_op <= `ALU_OP_NOP;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -169,7 +210,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_BTEQZ: begin
+        `INST_CTL_BTEQZ: begin
             ALU_op <= `ALU_OP_NOP;
             ALU_A_op <= `ALU_A_OP_T;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -183,7 +224,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_CMP: begin
+        `INST_CTL_CMP: begin
             ALU_op <= `ALU_OP_EQU;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -197,7 +238,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_CMPI: begin
+        `INST_CTL_CMPI: begin
             ALU_op <= `ALU_OP_EQU;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -211,7 +252,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_JR: begin
+        `INST_CTL_JR: begin
             ALU_op <= `ALU_OP_RETA;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -225,7 +266,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_LI: begin
+        `INST_CTL_LI: begin
             ALU_op <= `ALU_OP_RETB;
             ALU_A_op <= `ALU_A_OP_NOP;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -239,7 +280,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_LW: begin
+        `INST_CTL_LW: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -254,7 +295,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_LW_SP: begin
+        `INST_CTL_LW_SP: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_SP;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -268,7 +309,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_MFIH: begin
+        `INST_CTL_MFIH: begin
             ALU_op <= `ALU_OP_NOP;
             ALU_A_op <= `ALU_A_OP_NOP;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -282,7 +323,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_MFPC: begin
+        `INST_CTL_MFPC: begin
             ALU_op <= `ALU_OP_NOP;
             ALU_A_op <= `ALU_A_OP_NOP;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -296,7 +337,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_MTIH: begin
+        `INST_CTL_MTIH: begin
             ALU_op <= `ALU_OP_RETA;
             ALU_A_op <= `ALU_A_OP_REGA;
             REG_op <= `REG_OP_IH;
@@ -309,7 +350,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_MTSP: begin
+        `INST_CTL_MTSP: begin
             ALU_op <= `ALU_OP_RETA;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -323,7 +364,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_NOP: begin
+        `INST_CTL_NOP: begin
             ALU_op <= `ALU_OP_NOP;
             ALU_A_op <= `ALU_A_OP_NOP;
             ALU_B_op <= `ALU_B_OP_NOP;
@@ -337,7 +378,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_OR: begin
+        `INST_CTL_OR: begin
             ALU_op <= `ALU_OP_OR;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -351,7 +392,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_SLL: begin
+        `INST_CTL_SLL: begin
             ALU_op <= `ALU_OP_SLL;
             ALU_A_op <= `ALU_A_OP_RZ;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -365,7 +406,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_SLLV: begin
+        `INST_CTL_SLLV: begin
             ALU_op <= `ALU_OP_SLLV;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -379,7 +420,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_SRA: begin
+        `INST_CTL_SRA: begin
             ALU_op <= `ALU_OP_SRA;
             ALU_A_op <= `ALU_A_OP_RZ;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -393,7 +434,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_SRL: begin
+        `INST_CTL_SRL: begin
             ALU_op <= `ALU_OP_SRL;
             ALU_A_op <= `ALU_A_OP_RZ;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -407,7 +448,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_SUBU: begin
+        `INST_CTL_SUBU: begin
             ALU_op <= `ALU_OP_SUB;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_REGB;
@@ -421,7 +462,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_NOP;
         end
 
-        `INST_SW: begin
+        `INST_CTL_SW: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_REGA;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -436,7 +477,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_RY;
         end
 
-        `INST_SW_RS: begin
+        `INST_CTL_SW_RS: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_SP;
             ALU_B_op <= `ALU_B_OP_IM;
@@ -451,7 +492,7 @@ always @ (*) begin
             ram_data_op <= RAM_DATA_OP_RA;
         end
 
-        `INST_SW_SP: begin
+        `INST_CTL_SW_SP: begin
             ALU_op <= `ALU_OP_ADD;
             ALU_A_op <= `ALU_A_OP_SP;
             ALU_B_op <= `ALU_B_OP_IM;
