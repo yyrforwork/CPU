@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 `ifdef _FORWARD_CONTRAL_
 `else
 `define _FORWARD_CONTRAL_
@@ -158,4 +160,5 @@ always @(*) begin
 end
 
 endmodule
+
 `endif

@@ -6,24 +6,27 @@
 `include "define.v"
 
 module Pause_Control(
-    input wire [`REG_OP_BUS]   reg_op,
-    input wire [`REG_ADDR_BUS] wb_addr,
-    input wire [`REG_ADDR_BUS] reg1_addr,
-    input wire [`REG_ADDR_BUS] reg2_addr,
-    output reg PC_pause,
-    output reg if_id_pause,
-    output reg id_exe_pause
+    input      [`REG_OP_BUS]   reg_op,
+    input      [`REG_ADDR_BUS] wb_addr,
+    input      [`REG_ADDR_BUS] REGA_addr,
+    input      [`REG_ADDR_BUS] REGB_addr,
+    input      [`ALU_A_OP_BUS] ALU_A_op,
+    input      [`ALU_B_OP_BUS] ALU_B_op,
+    output reg                 PC_pause,
+    output reg                 ii_pause,
+    output reg                 ie_pause
     );
 
 always @(*) begin
-    if(reg_op==`REG_OP_REG && ((wb_addr==reg1_addr)||(wb_addr==reg2_addr))) begin
+    if(reg_op==`REG_OP_REG && (  (wb_addr==REGA_addr && ALU_A_op==`ALU_A_OP_REGA)
+                               ||(wb_addr==REGB_addr && ALU_B_op==`ALU_B_OP_REGB) ) ) begin
         PC_pause <= `PAUSE_ENABLE;
-        if_id_pause <= `PAUSE_ENABLE;
-        id_exe_pause <= `PAUSE_ENABLE;
+        ii_pause <= `PAUSE_ENABLE;
+        ie_pause <= `PAUSE_ENABLE;
     end else begin
         PC_pause <= `PAUSE_DISABLE;
-        if_id_pause <= `PAUSE_DISABLE;
-        id_exe_pause <= `PAUSE_DISABLE;
+        ii_pause <= `PAUSE_DISABLE;
+        ie_pause <= `PAUSE_DISABLE;
     end
 end
 

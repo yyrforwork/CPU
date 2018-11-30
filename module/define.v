@@ -11,6 +11,7 @@
 
 `define DATA_ZERO 16'b0000_0000_0000_0000
 `define ADDR_ZERO 18'b00_0000_0000_0000_0000
+`define INST_ZERO 16'b0000_0000_0000_0000
 
 `define FIRST_PC  16'b0000_0000_0000_0000
 
@@ -125,6 +126,11 @@
 `define INST_CTL_SW     5'b11101
 `define INST_CTL_SW_RS  5'b11110
 `define INST_CTL_SW_SP  5'b11111
+
+// inst rx ry rz addr
+`define INST_RX_ADDR 10:8
+`define INST_RY_ADDR 7:5
+`define INST_RZ_ADDR 4:2
 
 // im mux
 `define IM_OP_BUS 2:0

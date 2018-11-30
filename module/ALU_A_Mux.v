@@ -8,7 +8,7 @@
 module ALU_A_Mux(
         input     [`DATA_BUS]     data_T,
         input     [`DATA_BUS]     data_SP,
-        input     [`DATA_BUS]     data_RZ,
+        input     [`REG_ADDR_BUS] data_RZ,
         input     [`DATA_BUS]     data_REGA,
         input     [`DATA_BUS]     data_FOWD,
         input                     ALU_A_FOWD_en,

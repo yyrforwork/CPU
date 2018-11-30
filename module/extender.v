@@ -7,7 +7,6 @@
 
 module Extender(
         input  [`INST_BUS]  inst,
-
         output [`DATA_BUS]  z_e_7_0,
         output [`DATA_BUS]  s_e_10_0,
         output [`DATA_BUS]  s_e_7_0,

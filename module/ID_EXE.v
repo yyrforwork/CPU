@@ -74,8 +74,8 @@ module ie(
     output reg[`REG_ADDR_BUS]    ie_REG_ADDR_RZ,
     );
 
-    always @(posedge clk , posedge rst) begin
-        if (rst) begin
+    always @(posedge clk_50MHz or negedge rst) begin
+        if (~rst) begin
             // reset
         end
         else
@@ -122,4 +122,5 @@ module ie(
     end
 
 endmodule
+
 `endif

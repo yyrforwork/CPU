@@ -32,23 +32,24 @@ module EXE_MEM(
         output reg[`REG_ADDR_BUS]   em_WB_addr
     );
 
-    always @(posedge clk_50MHz, negedge rst) begin
-        if (~rst) begin
-            // reset
-        end
-        else begin
-            em_RAM_en      <= n_em_RAM_en;
-            em_RAM_op      <= n_em_RAM_op;
-            em_DATA_op     <= n_em_DATA_op;
-            em_REG_op      <= n_em_REG_op;
-
-            em_IH          <= n_em_IH;
-            em_PC          <= n_em_PC;
-            em_ALU_data    <= n_em_ALU_data;
-            em_RAM_WB_data <= n_em_RAM_WB_data;
-            em_WB_addr     <= n_em_WB_addr;
-        end
+always @(posedge clk_50MHz or negedge rst) begin
+    if (~rst) begin
+        // reset
     end
+    else begin
+        em_RAM_en      <= n_em_RAM_en;
+        em_RAM_op      <= n_em_RAM_op;
+        em_DATA_op     <= n_em_DATA_op;
+        em_REG_op      <= n_em_REG_op;
+
+        em_IH          <= n_em_IH;
+        em_PC          <= n_em_PC;
+        em_ALU_data    <= n_em_ALU_data;
+        em_RAM_WB_data <= n_em_RAM_WB_data;
+        em_WB_addr     <= n_em_WB_addr;
+    end
+end
+
 endmodule
 
 `endif
