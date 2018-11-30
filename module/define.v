@@ -24,11 +24,18 @@
 `define REG_OP_REG 3'b100
 `define REG_OP_NOP 3'b101
 
-// sram op
+// ram op
 `define RAM_OP_RD   1'b0
 `define RAM_OP_WR   1'b1
 `define RAM_ENABLE  1'b1
 `define RAM_DISABLE 1'b0
+
+// ram data mux
+`define RAM_DATA_OP_BUS 1:0
+`define RAM_DATA_OP_RX  2'b00
+`define RAM_DATA_OP_RY  2'b01
+`define RAM_DATA_OP_RA  2'b10
+`define RAM_DATA_OP_NOP 2'b11
 
 // sign extend
 `define _5_bit_1_  5'b1_1111
@@ -73,14 +80,46 @@
 `define INST_SW_RS  5'b01100 /* 010 ***-***** */ /* G1 */
 `define INST_SW_SP  5'b11010 /* *** ***-***** */
 
+`define INST_CTL_OP 5:0
+`define INST_CTL_ADDIU  5'b01001
+`define INST_CTL_ADDIU3 5'b01000
+`define INST_CTL_ADDSP3 5'b00000
+`define INST_CTL_ADDSP  5'b01100
+`define INST_CTL_ADDU   5'b11100
+`define INST_CTL_AND    5'b11101
+`define INST_CTL_B      5'b00010
+`define INST_CTL_BEQZ   5'b00100
+`define INST_CTL_BNEZ   5'b00101
+`define INST_CTL_BTEQZ  5'b01100
+`define INST_CTL_CMP    5'b11101
+`define INST_CTL_CMPI   5'b01110
+`define INST_CTL_JR     5'b11101
+`define INST_CTL_LI     5'b01101
+`define INST_CTL_LW     5'b10011
+`define INST_CTL_LW_SP  5'b10010
+`define INST_CTL_MFIH   5'b11110
+`define INST_CTL_MFPC   5'b11101
+`define INST_CTL_MTIH   5'b11110
+`define INST_CTL_MTSP   5'b01100
+`define INST_CTL_NOP    5'b00001
+`define INST_OR     5'b11101
+`define INST_SLL    5'b00110
+`define INST_SLLV   5'b11101
+`define INST_SRA    5'b00110
+`define INST_SRL    5'b00110
+`define INST_SUBU   5'b11100
+`define INST_SW     5'b11011
+`define INST_SW_RS  5'b01100
+`define INST_SW_SP  5'b11010
+
 // im mux
 `define IM_OP_BUS 2:0
 `define IM_OP_NOP      3'b000
-`define IM_OP_S_E_3_0  3'b001
-`define IM_OP_S_E_4_0  3'b010
-`define IM_OP_S_E_7_0  3'b011
-`define IM_OP_S_E_10_0 3'b100
-`define IM_OP_Z_E_7_0  3'b101
+`define IM_OP_s_e_3_0  3'b001
+`define IM_OP_s_e_4_0  3'b010
+`define IM_OP_s_e_7_0  3'b011
+`define IM_OP_s_e_10_0 3'b100
+`define IM_OP_z_e_7_0  3'b101
 
 // ALU A mux
 `define ALU_A_OP_BUS 2:0
@@ -114,8 +153,8 @@
 `define ALU_OP_NOP  4'b1110
 
 // jump control
-`define CLEAR_ENABLE  1'b1;
-`define CLEAR_DISABLE 1'b0;
+`define CLEAR_ENABLE  1'b1
+`define CLEAR_DISABLE 1'b0
 
 // jump data
 `define JUMP_DATA_BUS 1:0
@@ -133,8 +172,8 @@
 `define PC_JUMP_DISABLE   1'b0
 
 // pause control
-`define PAUSE_ENABLE 1'b1;
-`define PAUSE_ENABLE 1'b0;
+`define PAUSE_ENABLE 1'b1
+`define PAUSE_ENABLE 1'b0
 
 // WB Data Mux
 `define WB_DATA_OP_BUS 2:0

@@ -11,7 +11,7 @@ module REG_File(
 
         input  [`REG_ADDR_BUS] A_addr,
         input  [`REG_ADDR_BUS] B_addr,
-        
+
         input  [`REG_ADDR_BUS] wb_addr,
         input  [`DATA_BUS]     wb_data,
         input  [`REG_OP_BUS]   reg_op,
