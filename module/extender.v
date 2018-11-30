@@ -14,7 +14,7 @@ module Extender(
         output [`DATA_BUS]  s_e_3_0
     );
 
-assign z_e_7_0 = {{8{0}},        inst[7:0]};
+assign z_e_7_0 = {`_8_BIT_0_,    inst[7:0]};
 assign s_e_10_0= {{5{inst[10]}}, inst[10:0]};
 assign s_e_7_0 = {{8{inst[7]}},  inst[7:0]};
 assign s_e_4_0 = {{11{inst[4]}}, inst[4:0]};

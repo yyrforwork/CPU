@@ -19,7 +19,7 @@ module sram(
         input      [`DATA_BUS] data_i,   // data in
         input      [`ADDR_BUS] addr,     // address in
         input                  op,       // operation
-        input                  en,       // enable
+        input                  en        // enable
     );
 
 reg state;

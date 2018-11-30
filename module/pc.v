@@ -3,14 +3,14 @@
 `ifdef _PC_
 `else
 `define _PC
-`include define.v
+`include "define.v"
 
 module PC(
     input               rst,
     input               clk_50Mhz,
     input               PC_pause,
     input     [`PC_BUS] PC_in,
-    output reg[`PC_BUS] PC_out,
+    output reg[`PC_BUS] PC_out
     );
 
 always @(posedge clk_50Mhz or negedge rst) begin

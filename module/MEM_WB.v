@@ -25,7 +25,7 @@ module MEM_WB(
         output reg[`DATA_BUS]        mw_PC,
         output reg[`DATA_BUS]        mw_ALU_data,
         output reg[`DATA_BUS]        mw_RAM_data,
-        output reg[`REG_ADDR_BUS]    mw_WB_addr,
+        output reg[`REG_ADDR_BUS]    mw_WB_addr
     );
 
 always @(posedge clk_50MHz or negedge rst) begin

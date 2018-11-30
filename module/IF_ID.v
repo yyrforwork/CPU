@@ -13,7 +13,7 @@ module IF_ID(
         input      [`INST_BUS] ram_out_inst,
         input      [`PC_BUS]   pc_add_value,
         output reg [`PC_BUS]   ii_PC,
-        output reg [`INST_BUS] ii_inst,
+        output reg [`INST_BUS] ii_inst
     );
 
 always @(posedge clk_50MHz or negedge rst) begin
@@ -25,7 +25,7 @@ always @(posedge clk_50MHz or negedge rst) begin
         if (pc_clear == `CLEAR_ENABLE) begin
             ii_inst <= `INST_ZERO;
         end else begin
-            ii_inst <= ram_out_ins;
+            ii_inst <= ram_out_inst;
             ii_PC  <= pc_add_value;
         end
     end

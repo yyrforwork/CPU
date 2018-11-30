@@ -24,7 +24,7 @@ module ie(
     input     [`ALU_B_OP_BUS]    n_ie_ALU_B_op,
     input     [`IM_OP_BUS]       n_ie_IM_op,
     input     [`WB_ADDR_OP_BUS]  n_ie_WB_ADDR_op,
-    input     [`RAM_DATA_OP_BUS] n_ie_RAM_DATA_op,
+    input                        n_ie_RAM_DATA_op,
     //regs
     input     [`DATA_BUS]        n_ie_REGA,
     input     [`DATA_BUS]        n_ie_REGB,
@@ -43,8 +43,8 @@ module ie(
     output reg[`WB_DATA_OP_BUS]  ie_DATA_op,
     output reg[`REG_OP_BUS]      ie_REG_op,
     //mem op
-    output reg[`RAM_EN_OP_BUS]   ie_RAM_EN_op,
-    output reg[`RAM_OP_BUS]      ie_RAM_op,
+    output reg                   ie_RAM_en,
+    output reg                   ie_RAM_op,
     //exe op
     output reg[`ALU_OP_BUS]      ie_ALU_op,
     output reg[`JUMP_DATA_BUS]   ie_JUMP_DATA_op,
@@ -53,7 +53,7 @@ module ie(
     output reg[`ALU_B_OP_BUS]    ie_ALU_B_op,
     output reg[`IM_OP_BUS]       ie_IM_op,
     output reg[`WB_ADDR_OP_BUS]  ie_WB_ADDR_op,
-    output reg[`RAM_DATA_OP_BUS] ie_RAM_DATA_op,
+    output reg                   ie_RAM_DATA_op,
     //regs
     output reg[`DATA_BUS]        ie_REGA,
     output reg[`DATA_BUS]        ie_REGB,
@@ -71,7 +71,7 @@ module ie(
     //wb addr
     output reg[`REG_ADDR_BUS]    ie_REG_ADDR_RX,
     output reg[`REG_ADDR_BUS]    ie_REG_ADDR_RY,
-    output reg[`REG_ADDR_BUS]    ie_REG_ADDR_RZ,
+    output reg[`REG_ADDR_BUS]    ie_REG_ADDR_RZ
     );
 
     always @(posedge clk_50MHz or negedge rst) begin
@@ -81,17 +81,17 @@ module ie(
         else
         if (ie_PAUSE != `PAUSE_ENABLE) begin
             //wb op
-            ie_DATA_op   <= n_ie_DATA_op;
-            ie_REG_op    <= n_ie_REG_op;
+            ie_DATA_op <= n_ie_DATA_op;
+            ie_REG_op  <= n_ie_REG_op;
             
             //mem op
-            ie_RAM_EN_op <= n_ie_RAM_EN_op;
-            ie_RAM_op    <= n_ie_RAM_op;
+            ie_RAM_en  <= n_ie_RAM_en;
+            ie_RAM_op  <= n_ie_RAM_op;
 
             //exe op
             ie_ALU_op       <= n_ie_ALU_op;   
             ie_JUMP_DATA_op <= n_ie_JUMP_DATA_op;
-            ie_JUMP_EN_op   <= n_ie_RAM_EN_op;
+            ie_JUMP_EN_op   <= n_ie_JUMP_EN_op;
             ie_ALU_A_op     <= n_ie_ALU_A_op;
             ie_ALU_B_op     <= n_ie_ALU_B_op;
             ie_IM_op        <= n_ie_IM_op;

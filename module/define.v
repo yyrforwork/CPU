@@ -15,6 +15,7 @@
 `define FIRST_PC  16'b0000_0000_0000_0000
 
 // reg file
+`define REG_ADDR_NUM 8
 `define REG_ADDR_BUS 2:0
 `define REG_OP_BUS 2:0
 `define REG_OP_T   3'b000
@@ -38,14 +39,14 @@
 `define RAM_DATA_OP_NOP 2'b11
 
 // sign extend
-`define _5_bit_1_  5'b1_1111
-`define _5_bit_0_  5'b0_0000
-`define _8_bit_1_  8'b1111_1111
-`define _8_bit_0_  8'b0000_0000
-`define _11_bit_1_ 12'b111_1111_1111
-`define _11_bit_0_ 12'b000_0000_0000
-`define _12_bit_1_ 12'b1111_1111_1111
-`define _12_bit_0_ 12'b0000_0000_0000
+`define _5_BIT_1_  5'b1_1111
+`define _5_BIT_0_  5'b0_0000
+`define _8_BIT_1_  8'b1111_1111
+`define _8_BIT_0_  8'b0000_0000
+`define _11_BIT_1_ 12'b111_1111_1111
+`define _11_BIT_0_ 12'b000_0000_0000
+`define _12_BIT_1_ 12'b1111_1111_1111
+`define _12_BIT_0_ 12'b0000_0000_0000
 
 // Control
 `define INST_OP 15:11

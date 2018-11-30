@@ -9,8 +9,8 @@ module EXE_MEM(
         input      rst,
         input      clk_50MHz,
 
-        input     [`RAM_EN_OP_BUS]  n_em_RAM_en,
-        input     [`RAM_OP_BUS]     n_em_RAM_op,
+        input                       n_em_RAM_en,
+        input                       n_em_RAM_op,
         input     [`WB_DATA_OP_BUS] n_em_DATA_op,
         input     [`REG_OP_BUS]     n_em_REG_op,
 
@@ -20,8 +20,8 @@ module EXE_MEM(
         input     [`DATA_BUS]       n_em_RAM_WB_data,
         input     [`REG_ADDR_BUS]   n_em_WB_addr,
 
-        output reg[`RAM_EN_OP_BUS]  em_RAM_en,
-        output reg[`RAM_OP_BUS]     em_RAM_op,
+        output reg                  em_RAM_en,
+        output reg                  em_RAM_op,
         output reg[`WB_DATA_OP_BUS] em_DATA_op,
         output reg[`REG_OP_BUS]     em_REG_op,
         

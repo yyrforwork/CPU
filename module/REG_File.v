@@ -28,12 +28,12 @@ reg [`DATA_BUS] reg_T;
 reg [`DATA_BUS] reg_SP;
 reg [`DATA_BUS] reg_IH;
 reg [`DATA_BUS] reg_RA;
-reg [`DATA_BUS] regs[`REG_ADDR_BUS];
+reg [`DATA_BUS] regs[`REG_ADDR_NUM-1:0];
 
 assign  T_data = reg_T;
 assign SP_data = reg_SP;
 assign IH_data = reg_IH;
-assign RA_data = reg_;
+assign RA_data = reg_RA;
 
 assign A_data = regs[A_addr];
 assign B_data = regs[B_addr];
