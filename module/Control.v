@@ -41,23 +41,23 @@ always @(*) begin
                 3'b100: inst_ctl_op <= `INST_CTL_MTSP;
                 3'b010: inst_ctl_op <= `INST_CTL_SW_RS;
             endcase end
-        `INST_GROUP2:
-            begin case(inst[1:0])
-                2'b01: inst_ctl_op <= INST_CTL_ADDU;
-                2'b11: inst_ctl_op <= INST_CTL_SUBU;
-            endcase end
-        `INST_GROUP3:
-            begin case(inst[4:0])
-                5'b01100: inst_ctl_op <= INST_CTL_AND;
-                5'b01010: inst_ctl_op <= INST_CTL_CMP;
-                5'b00000: 
-                    begin case(inst[7:5])
-                        3'b000: inst_ctl_op <= INST_CTL_JR;
-                        3'b010: inst_ctl_op <= INST_CTL_MFPC;
-                    endcase end
-                5'b01101: inst_ctl_op <= INST_CTL_OR;
-                5'b00100: inst_ctl_op <= INST_CTL_SLLV;
-            endcase end
+        `INST_GROUP2:inst_ctl_op <= INST_CTL_ADDU;
+            // begin case(inst[1:0])
+            //     2'b01: inst_ctl_op <= INST_CTL_ADDU;
+            //     2'b11: inst_ctl_op <= INST_CTL_SUBU;
+            // endcase end
+        // `INST_GROUP3:
+        //     begin case(inst[4:0])
+        //         5'b01100: inst_ctl_op <= INST_CTL_AND;
+        //         5'b01010: inst_ctl_op <= INST_CTL_CMP;
+        //         5'b00000: 
+        //             begin case(inst[7:5])
+        //                 3'b000: inst_ctl_op <= INST_CTL_JR;
+        //                 3'b010: inst_ctl_op <= INST_CTL_MFPC;
+        //             endcase end
+        //         5'b01101: inst_ctl_op <= INST_CTL_OR;
+        //         5'b00100: inst_ctl_op <= INST_CTL_SLLV;
+        //     endcase end
         `INST_B:      inst_ctl_op <= `INST_CTL_ADDIU;
         `INST_BEQZ:   inst_ctl_op <= `INST_CTL_BEQZ;
         `INST_BNEZ:   inst_ctl_op <= `INST_CTL_BNEZ;

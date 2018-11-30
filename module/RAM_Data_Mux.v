@@ -5,7 +5,7 @@
 `define _RAM_DATA_MUX_
 `include "define.v"
 
-module WB_Data_Mux(
+module RAM_Data_Mux(
         input     [`DATA_BUS]        data_REGA,
         input     [`DATA_BUS]        data_REGB,
         input     [`ADDR_BUS]        data_RA,
