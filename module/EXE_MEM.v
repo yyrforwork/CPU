@@ -11,7 +11,7 @@ module EXE_MEM(
 
         input                       n_em_RAM_en,
         input                       n_em_RAM_op,
-        input     [`WB_DATA_OP_BUS] n_em_DATA_op,
+        input     [`WB_DATA_OP_BUS] n_em_WB_DATA_op,
         input     [`REG_OP_BUS]     n_em_REG_op,
 
         input     [`DATA_BUS]       n_em_IH,
@@ -22,7 +22,7 @@ module EXE_MEM(
 
         output reg                  em_RAM_en,
         output reg                  em_RAM_op,
-        output reg[`WB_DATA_OP_BUS] em_DATA_op,
+        output reg[`WB_DATA_OP_BUS] em_WB_DATA_op,
         output reg[`REG_OP_BUS]     em_REG_op,
         
         output reg[`DATA_BUS]       em_IH,
@@ -39,7 +39,7 @@ always @(posedge clk_50MHz or negedge rst) begin
     else begin
         em_RAM_en      <= n_em_RAM_en;
         em_RAM_op      <= n_em_RAM_op;
-        em_DATA_op     <= n_em_DATA_op;
+        em_WB_DATA_op  <= n_em_WB_DATA_op;
         em_REG_op      <= n_em_REG_op;
 
         em_IH          <= n_em_IH;

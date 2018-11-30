@@ -11,7 +11,7 @@ module ie(
     input                        ie_PAUSE,
     input     [`INST_BUS]        inst,
     // wb op
-    input     [`WB_DATA_OP_BUS]  n_ie_DATA_op,
+    input     [`WB_DATA_OP_BUS]  n_ie_WB_DATA_op,
     input     [`REG_OP_BUS]      n_ie_REG_op,
     //mem op
     input                        n_ie_RAM_en,
@@ -24,7 +24,7 @@ module ie(
     input     [`ALU_B_OP_BUS]    n_ie_ALU_B_op,
     input     [`IM_OP_BUS]       n_ie_IM_op,
     input     [`WB_ADDR_OP_BUS]  n_ie_WB_ADDR_op,
-    input                        n_ie_RAM_DATA_op,
+    input     [`RAM_DATA_OP_BUS] n_ie_RAM_DATA_op,
     //regs
     input     [`DATA_BUS]        n_ie_REGA,
     input     [`DATA_BUS]        n_ie_REGB,
@@ -40,7 +40,7 @@ module ie(
     input     [`DATA_BUS]        n_ie_s_e_3_0,
     input     [`DATA_BUS]        n_ie_z_e_7_0,
     //wb op
-    output reg[`WB_DATA_OP_BUS]  ie_DATA_op,
+    output reg[`WB_DATA_OP_BUS]  ie_WB_DATA_op,
     output reg[`REG_OP_BUS]      ie_REG_op,
     //mem op
     output reg                   ie_RAM_en,
@@ -53,7 +53,7 @@ module ie(
     output reg[`ALU_B_OP_BUS]    ie_ALU_B_op,
     output reg[`IM_OP_BUS]       ie_IM_op,
     output reg[`WB_ADDR_OP_BUS]  ie_WB_ADDR_op,
-    output reg                   ie_RAM_DATA_op,
+    output reg[`RAM_DATA_OP_BUS] ie_RAM_DATA_op,
     //regs
     output reg[`DATA_BUS]        ie_REGA,
     output reg[`DATA_BUS]        ie_REGB,
@@ -81,7 +81,7 @@ module ie(
         else
         if (ie_PAUSE != `PAUSE_ENABLE) begin
             //wb op
-            ie_DATA_op <= n_ie_DATA_op;
+            ie_WB_DATA_op <= n_ie_WB_DATA_op;
             ie_REG_op  <= n_ie_REG_op;
             
             //mem op
