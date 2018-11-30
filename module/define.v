@@ -12,7 +12,6 @@
 `define DATA_ZERO 16'b0000_0000_0000_0000
 `define ADDR_ZERO 18'b00_0000_0000_0000_0000
 `define INST_ZERO 16'b0000_0000_0000_0000
-
 `define FIRST_PC  16'b0000_0000_0000_0000
 
 // reg file
@@ -194,6 +193,10 @@
 // pause control
 `define PAUSE_ENABLE  1'b1
 `define PAUSE_DISABLE 1'b0
+
+// forward control
+`define FORWARD_ENABLE  1'b1
+`define FORWARD_DISABLE 1'b0
 
 // WB Data Mux
 `define WB_DATA_OP_BUS 2:0

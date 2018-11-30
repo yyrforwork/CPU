@@ -39,11 +39,11 @@ reg [`DATA_BUS] out2_data;
 always @(*) begin
     case(emo_wb_data_op)
         `WB_DATA_OP_ALU : out1_data <= emo_alu_answer;
-        `WB_DATA_OP_MEM : out1_data <= `EMPTY_DATA;
+        `WB_DATA_OP_MEM : out1_data <= `DATA_ZERO;
         `WB_DATA_OP_IH  : out1_data <= emo_IH_wb_data;
         `WB_DATA_OP_PC  : out1_data <= emo_PC_wb_data;
-        `WB_DATA_OP_NOP : out1_data <= `EMPTY_DATA;
-        default: out1data <= `EMPTY_DATA;
+        `WB_DATA_OP_NOP : out1_data <= `DATA_ZERO;
+        default: out1data <= `DATA_ZERO;
     endcase
 
     case(mwo_wb_data_op)
@@ -51,15 +51,12 @@ always @(*) begin
         `WB_DATA_OP_MEM : out2_data <= mwo_ram_read_answer;
         `WB_DATA_OP_IH  : out2_data <= mwo_IH_wb_data;
         `WB_DATA_OP_PC  : out2_data <= mwo_PC_wb_data;
-        `WB_DATA_OP_NOP : out2_data <= `EMPTY_DATA;
-        default: out2_data <= `EMPTY_DATA;
+        `WB_DATA_OP_NOP : out2_data <= `DATA_ZERO;
+        default: out2_data <= `DATA_ZERO;
     endcase
 end
 
 always @(*) begin
-    if ((emo_wb_addr == reg1_addr)&&(reg_op == `reg))
-        reg1
-
     case(emo_reg_op)
         `REG_OP_REG:
             begin
@@ -70,14 +67,14 @@ always @(*) begin
                         reg1_forward_data   <= out1_data 
                         reg1_forward_enable <= `FORWARD_ENABLE;
                     end else begin
-                        reg1_forward_data   <= `EMPTY_DATA;
+                        reg1_forward_data   <= `DATA_ZERO;
                         reg1_forward_enable <= `FORWARD_DISABLE;
                     end
                 end else begin
-                    reg1_forward_data   <= `EMPTY_DATA;
+                    reg1_forward_data   <= `DATA_ZERO;
                     reg1_forward_enable <= `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `EMPTY_DATA;
+                reg2_forward_data   <= `DATA_ZERO;
                 reg2_forward_enable <= `FORWARD_DISABLE;
             end
         `REG_OP_IH:
@@ -87,10 +84,10 @@ always @(*) begin
                     reg1_forward_data   <= out1_data; 
                     reg1_forward_enable <= `FORWARD_ENABLE;
                 end else begin
-                    reg1_forward_data   <= `EMPTY_DATA;
+                    reg1_forward_data   <= `DATA_ZERO;
                     reg1_forward_enable <= `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `EMPTY_DATA;
+                reg2_forward_data   <= `DATA_ZERO;
                 reg2_forward_enable <= `FORWARD_DISABLE;
             end
         `REG_OP_SP:
@@ -100,10 +97,10 @@ always @(*) begin
                     reg1_forward_data   <= out1_data;
                     reg1_forward_enable <= `FORWARD_ENABLE;
                 end else begin
-                    reg1_forward_data   <= `EMPTY_DATA;
+                    reg1_forward_data   <= `DATA_ZERO;
                     reg1_forward_enable <= `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `EMPTY_DATA;
+                reg2_forward_data   <= `DATA_ZERO;
                 reg2_forward_enable <= `FORWARD_DISABLE;
             end
         `REG_OP_T:
@@ -113,17 +110,17 @@ always @(*) begin
                     reg1_forward_data   <= out1_data;
                     reg1_forward_enable <= `FORWARD_ENABLE;
                 end else begin
-                    reg1_forward_data   <= `EMPTY_DATA;
+                    reg1_forward_data   <= `DATA_ZERO;
                     reg1_forward_enable <= `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `EMPTY_DATA;
+                reg2_forward_data   <= `DATA_ZERO;
                 reg2_forward_enable <= `FORWARD_DISABLE;
             end
         default: 
             begin
-                reg1_forward_data   <= `EMPTY_DATA;
+                reg1_forward_data   <= `DATA_ZERO;
                 reg1_forward_enable <= `FORWARD_DISABLE;
-                reg2_forward_data   <= `EMPTY_DATA;
+                reg2_forward_data   <= `DATA_ZERO;
                 reg2_forward_enable <= `FORWARD_DISABLE;
             end
     endcase
@@ -138,22 +135,22 @@ always @(*) begin
                         reg1_forward_data   <= out1_data 
                         reg1_forward_enable <= `FORWARD_ENABLE;
                     end else begin
-                        reg1_forward_data   <= `EMPTY_DATA;
+                        reg1_forward_data   <= `DATA_ZERO;
                         reg1_forward_enable <= `FORWARD_DISABLE;
                     end
                 end else begin
-                    reg1_forward_data   <= `EMPTY_DATA;
+                    reg1_forward_data   <= `DATA_ZERO;
                     reg1_forward_enable <= `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `EMPTY_DATA;
+                reg2_forward_data   <= `DATA_ZERO;
                 reg2_forward_enable <= `FORWARD_DISABLE;
             end
 
         default: 
             begin
-                reg1_forward_data   <= `EMPTY_DATA;
+                reg1_forward_data   <= `DATA_ZERO;
                 reg1_forward_enable <= `FORWARD_DISABLE;
-                reg2_forward_data   <= `EMPTY_DATA;
+                reg2_forward_data   <= `DATA_ZERO;
                 reg2_forward_enable <= `FORWARD_DISABLE;
             end
     endcase

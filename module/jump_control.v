@@ -10,8 +10,6 @@ module Jump_Control(
         output reg clear
     );
 
-assign clear = (pc_jump_en == `PC_JUMP) ? `CLEAR_ENABLE : `CLEAR_DISABLE;
-
 always @(*) begin
     case(pc_jump_en)
         `PC_JUMP_ENABLE:  clear <= `CLEAR_ENABLE;

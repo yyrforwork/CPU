@@ -9,7 +9,7 @@ module ie(
     input                        rst,
     input                        clk_50MHz,
     input                        ie_PAUSE,
-    input     [`INSTRUCTION_BUS] inst,
+    input     [`INST_BUS]        inst,
     // wb op
     input     [`WB_DATA_OP_BUS]  n_ie_DATA_op,
     input     [`REG_OP_BUS]      n_ie_REG_op,
