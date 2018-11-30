@@ -13,7 +13,7 @@ module ALU_A_Mux(
         input     [`DATA_BUS]     data_FOWD,
         input                     ALU_A_FOWD_en,
         input     [`ALU_A_OP_BUS] ALU_A_op,
-        output reg[`DATA_BUS]     ALU_A_data,
+        output reg[`DATA_BUS]     ALU_A_data
     );
 
 always @(*) begin

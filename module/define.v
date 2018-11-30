@@ -213,4 +213,11 @@
 `define WB_ADDR_OP_RY  2'b10
 `define WB_ADDR_OP_RZ  2'b11
 
+// RAM Data Mux
+`define RAM_DATA_OP_BUS 1:0
+`define RAM_DATA_OP_NOP  2'b00
+`define RAM_DATA_OP_REGA 2'b01
+`define RAM_DATA_OP_REGB 2'b10
+`define RAM_DATA_OP_RA   2'b11
+
 `endif
