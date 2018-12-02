@@ -16,7 +16,7 @@ always @(*) begin
         `JUMP_EN_OP_EN:     jump_en <= `PC_JUMP_ENABLE;
         `JUMP_EN_OP_ZEROJ:  jump_en <= zero;
         `JUMP_EN_OP_NZEROJ: jump_en <= ~zero;
-        `JUMP_EN_OP_NOP:    jump_en <= jump_en;
+        `JUMP_EN_OP_NOP:    jump_en <= `PC_JUMP_DIABLE;
     endcase
 end
 

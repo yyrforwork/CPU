@@ -34,7 +34,10 @@ module EXE_MEM(
 
 always @(posedge clk_50MHz or negedge rst) begin
     if (~rst) begin
-        // reset
+        em_RAM_en      <= `RAM_DISABLE;
+        em_RAM_op      <= `RAM_OP_RD;
+        em_WB_DATA_op  <= `WB_DATA_OP_NOP;
+        em_REG_op      <= `REG_OP_NOP;        
     end
     else begin
         em_RAM_en      <= n_em_RAM_en;

@@ -30,7 +30,8 @@ module MEM_WB(
 
 always @(posedge clk_50MHz or negedge rst) begin
     if (~rst) begin
-        // reset
+        mw_WB_data_op <= `WB_DATA_OP_NOP;
+        mw_REG_op     <= `REG_OP_NOP;
     end
     else begin
         mw_WB_data_op <= n_mw_WB_data_op;
