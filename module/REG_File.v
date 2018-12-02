@@ -28,7 +28,7 @@ reg [`DATA_BUS] reg_T;
 reg [`DATA_BUS] reg_SP;
 reg [`DATA_BUS] reg_IH;
 reg [`DATA_BUS] reg_RA;
-reg [`DATA_BUS] regs[`REG_ADDR_NUM-1:0];
+reg [`DATA_BUS] regs[0:`REG_ADDR_NUM-1];
 
 assign  T_data = reg_T;
 assign SP_data = reg_SP;

@@ -8,12 +8,12 @@
 module IF_ID(
         input                  rst,
         input                  clk_50MHz,
-        input                  pc_pause,
-        input                  pc_clear,
+        input                  ii_PC_pause,
+        input                  ii_PC_clear,
         input      [`INST_BUS] ram_out_inst,
         input      [`PC_BUS]   pc_add_value,
-        output reg [`PC_BUS]   ii_PC,
-        output reg [`INST_BUS] ii_inst
+        output reg [`INST_BUS] ii_inst,
+        output reg [`PC_BUS]   ii_PC
     );
 
 always @(posedge clk_50MHz or negedge rst) begin
@@ -21,8 +21,8 @@ always @(posedge clk_50MHz or negedge rst) begin
         // reset
         ii_inst <= `INST_ZERO;
     end
-    else if (pc_pause == `PAUSE_DISABLE) begin
-        if (pc_clear == `CLEAR_ENABLE) begin
+    else if (ii_PC_pause == `PAUSE_DISABLE) begin
+        if (ii_PC_clear == `CLEAR_ENABLE) begin
             ii_inst <= `INST_ZERO;
         end else begin
             ii_inst <= ram_out_inst;

@@ -8,7 +8,7 @@
 module WB_Data_Mux(
         input     [`DATA_BUS]       alu_data,
         input     [`DATA_BUS]       mem_data,
-        input     [`ADDR_BUS]       wb_PC,
+        input     [`PC_BUS]       wb_PC,
         input     [`DATA_BUS]       wb_IH,
         input     [`WB_DATA_OP_BUS] wb_data_op,
         output reg[`DATA_BUS]       wb_data

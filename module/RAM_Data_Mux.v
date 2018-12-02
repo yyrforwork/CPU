@@ -8,7 +8,7 @@
 module RAM_Data_Mux(
         input     [`DATA_BUS]        data_REGA,
         input     [`DATA_BUS]        data_REGB,
-        input     [`ADDR_BUS]        data_RA,
+        input     [`DATA_BUS]        data_RA,
         input     [`RAM_DATA_OP_BUS] RAM_data_op,
         output reg[`DATA_BUS]        RAM_data
     );

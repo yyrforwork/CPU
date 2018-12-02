@@ -5,7 +5,7 @@
 `define _ID_EXE_
 `include "define.v"
 
-module ie(
+module ID_EXE(
     input                        rst,
     input                        clk_50MHz,
     input                        ie_PAUSE,
