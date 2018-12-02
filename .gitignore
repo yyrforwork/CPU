@@ -19,4 +19,8 @@ xst/
 cpu.*
 CPU.*
 cpu*
+planAhead*
+xlnx*
+pa*
+_ngo*
 *\~
