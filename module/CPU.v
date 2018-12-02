@@ -119,8 +119,6 @@ reg ram2_ctl_en;
 
 wire[`PC_BUS] inst_ram_in_addr;
 wire[`INST_BUS] inst_ram_out_inst;
-assign inst_ram_in_addr = ram2_ctl_addr;
-assign inst_ram_out_inst = ram2_ctl_data_o;
 // ram2 combination
 sram ram2(
         .rst(rst),
@@ -140,12 +138,15 @@ sram ram2(
     );
 
 
-//############# WIRE OUT OF PIPE ######
-/*wire[`PC_BUS] jump_MUX_pc_out;   
-wire pc_pause;
-wire */
-//############# IF ####################
+assign inst_ram_in_addr = ram2_ctl_addr;
+assign inst_ram_out_inst = ram2_ctl_data_o;
 
+wire p_c_out_pc_pause;
+wire p_c_out_ii_pause;
+wire p_c_out_ie_pause;
+wire[`PC_BUS] pc_new;
+
+//############# IF ####################
 //PC module
 wire pc_pause;
 wire[`PC_BUS] pc_in_pc;
@@ -179,7 +180,6 @@ Jump_Control jump_ctl(
     );
 
 //pc jump mux
-wire[`PC_BUS] pc_new;
 wire[`PC_BUS] jump_addr;
 PC_Jump_Mux pc_jump_mux(
     .PC_jump_op(jump_en),
@@ -270,6 +270,10 @@ wire[`DATA_BUS] reg_files_out_sp_data;
 wire[`DATA_BUS] reg_files_out_ih_data;
 wire[`DATA_BUS] reg_files_out_ra_data;
 
+wire[`REG_ADDR_BUS] mwo_wb_addr;
+wire[`DATA_BUS] wb_data;
+wire[`REG_ADDR_BUS] mwo_reg_op;
+
 assign reg_files_in_a_addr = iio_inst[`INST_RX_ADDR];
 assign reg_files_in_b_addr = iio_inst[`INST_RY_ADDR];
 assign reg_files_in_wb_addr = mwo_wb_addr;
@@ -319,12 +323,6 @@ wire[`REG_ADDR_BUS] p_c_in_reg2_addr;
 wire[`ALU_A_OP_BUS] p_c_in_alu_a_op;
 wire[`ALU_B_OP_BUS] p_c_in_alu_b_op;
 wire[`REG_ADDR_BUS] wb_addr;
-
-wire p_c_out_pc_pause;
-wire p_c_out_ii_pause;
-wire p_c_out_ie_pause;
-
-
 
 assign p_c_in_reg_op = mco_reg_op;
 assign p_c_in_wb_addr = wb_addr;     // !!!
@@ -530,12 +528,10 @@ wire[`DATA_BUS] emo_ram_wb_data;
 wire[`REG_ADDR_BUS] emo_wb_addr;
 
 wire[`WB_DATA_OP_BUS] mwo_wb_data_op;
-wire[`REG_ADDR_BUS] mwo_reg_op;
 wire[`DATA_BUS] mwo_ih;
 wire[`DATA_BUS] mwo_pc;
 wire[`DATA_BUS] mwo_alu_data;
 wire[`DATA_BUS] mwo_ram_data;
-wire[`REG_ADDR_BUS] mwo_wb_addr;
 Forward forward_ctrl(
     .emo_PC_wb_data(emo_pc),
     .mwo_PC_wb_data(mwo_pc),
@@ -751,7 +747,6 @@ MEM_WB mwm_wb(
 //############# WB ####################
 
 //wb data mux
-wire[`DATA_BUS] wb_data;
 WB_Data_Mux wb_data_mux(
     .alu_data(mwo_alu_data),
     .mem_data(mwo_ram_data),
