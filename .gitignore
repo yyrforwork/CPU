@@ -16,4 +16,7 @@ iseconfig/
 *.xise
 *.xrpt
 xst/
+cpu.*
+CPU.*
+cpu*
 *\~
