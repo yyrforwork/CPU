@@ -9,19 +9,19 @@ module REG_File(
         input rst,
         input clk_50MHz,
 
-        input  [`REG_ADDR_BUS] A_addr,
-        input  [`REG_ADDR_BUS] B_addr,
+        input      [`REG_ADDR_BUS] A_addr,
+        input      [`REG_ADDR_BUS] B_addr,
 
-        input  [`REG_ADDR_BUS] wb_addr,
-        input  [`DATA_BUS]     wb_data,
-        input  [`REG_OP_BUS]   reg_op,
+        input      [`REG_ADDR_BUS] wb_addr,
+        input      [`DATA_BUS]     wb_data,
+        input      [`REG_OP_BUS]   reg_op,
 
-        output [`DATA_BUS]     A_data,
-        output [`DATA_BUS]     B_data,
-        output [`DATA_BUS]     T_data,
-        output [`DATA_BUS]     SP_data,
-        output [`DATA_BUS]     IH_data,
-        output [`DATA_BUS]     RA_data
+        output     [`DATA_BUS]     A_data,
+        output     [`DATA_BUS]     B_data,
+        output     [`DATA_BUS]     T_data,
+        output     [`DATA_BUS]     SP_data,
+        output     [`DATA_BUS]     IH_data,
+        output     [`DATA_BUS]     RA_data
     );
 
 reg [`DATA_BUS] reg_T;
@@ -38,7 +38,7 @@ assign RA_data = reg_RA;
 assign A_data = regs[A_addr];
 assign B_data = regs[B_addr];
 
-always @(posedge clk_50MHz or negedge rst)
+always @(negedge clk_50MHz or negedge rst)
 begin
     if(~rst) begin
          reg_T <= `DATA_ZERO;

@@ -50,20 +50,19 @@ CPU cpu_v1(
    );
 
 initial begin
-    rst = 1'b0;
-    clk = 1'b0;
+    rst = 1'b1;
+    clk = 1'b1;
     clk_11MHz = 1'b0;
     clk_50MHz = 1'b0;
-    $monitor("%dns monitor: ram1_data=%x, ram1_addr=%x", $stime, ram1_data, ram1_addr);
-	 #100 rst = ~rst;
-	 #10  rst = ~rst;
+	 #10 rst = ~rst;
+	 #10 rst = ~rst;
 end
 
 always #10   begin clk_50MHz = ~clk_50MHz; end
 always #45   begin clk_11MHz = ~clk_11MHz; end
 always #1000 begin clk = ~clk; end
 
-initial #20000 $finish;
+initial #200 $finish;
 
 endmodule
 `endif

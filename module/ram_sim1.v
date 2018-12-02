@@ -13,14 +13,16 @@ module RAM_SIM1(
 
 reg [`INST_BUS] insts[0:15] ;
 initial begin
-    insts[0] = 16'b01101_000_00000001;
-	insts[1] = 16'b01101_001_00000010;
-	insts[2] = 16'b01101_010_00000011;
+    insts[0] = 16'b01101_000_000_00001;  // LI
+	insts[1] = 16'b01101_001_000_00010;  // LI
+	insts[2] = 16'b01101_010_000_00011;  // LI
+    insts[3] = 16'b01001_000_000_00100;  // ADDIU
+    insts[4] = 16'b01000_000_011_00110;  // ADDIU3
+    insts[5] = 16'b11100_000_001_01001;  // ADDU
+    // insts[3] = 16'b
 end
 
-assign address = pc[3:0];
-
-assign inst = insts[address];
+assign inst = insts[pc[3:0]];
 
 endmodule
 

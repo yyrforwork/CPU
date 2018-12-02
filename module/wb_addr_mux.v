@@ -18,7 +18,7 @@ always @(*) begin
         `WB_ADDR_OP_RX:  wb_addr <= rx_addr;
         `WB_ADDR_OP_RY:  wb_addr <= ry_addr;
         `WB_ADDR_OP_RZ:  wb_addr <= rz_addr;
-        `WB_ADDR_OP_NOP: wb_addr <= wb_addr;
+        `WB_ADDR_OP_NOP: wb_addr <= {16'bz};
     endcase 
 end
 

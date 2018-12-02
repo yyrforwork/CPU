@@ -329,6 +329,7 @@ Extender ex(
 //pause control
 wire[`REG_OP_BUS] p_c_in_reg_op;
 wire[`REG_ADDR_BUS] p_c_in_wb_addr;
+wire[`WB_DATA_OP_BUS] p_c_in_wb_data_op;
 wire[`REG_ADDR_BUS] p_c_in_reg1_addr;
 wire[`REG_ADDR_BUS] p_c_in_reg2_addr;
 wire[`ALU_A_OP_BUS] p_c_in_alu_a_op;
@@ -336,7 +337,8 @@ wire[`ALU_B_OP_BUS] p_c_in_alu_b_op;
 wire[`REG_ADDR_BUS] wb_addr;
 
 assign p_c_in_reg_op = mco_reg_op;
-assign p_c_in_wb_addr = wb_addr;     // !!!
+assign p_c_in_wb_addr = wb_addr;
+assign p_c_in_wb_data_op = ieo_wb_data_op;
 assign p_c_in_reg1_addr = iio_inst[`INST_RX_ADDR];
 assign p_c_in_reg2_addr = iio_inst[`INST_RY_ADDR];
 assign p_c_in_alu_a_op = mco_alu_A_op;
@@ -345,6 +347,7 @@ assign p_c_in_alu_b_op = mco_alu_B_op;
 Pause_Control p_c(
     .reg_op(p_c_in_reg_op),
     .wb_addr(p_c_in_wb_addr),
+    .wb_data_op(p_c_in_wb_data_op),
     .REGA_addr(p_c_in_reg1_addr),
     .REGB_addr(p_c_in_reg2_addr),
     .ALU_A_op(p_c_in_alu_a_op),
@@ -774,6 +777,19 @@ WB_Data_Mux wb_data_mux(
     .wb_data_op(mwo_wb_data_op),
     .wb_data(wb_data)
     );
+
+initial begin
+    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x %x %x",
+        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc,
+                        p_c_in_wb_addr,
+                        pc_pause,
+                        wb_data,
+                        ieo_reg_addr_rx,
+                        emo_wb_addr,
+                        emo_reg_op
+        );
+end
+
 endmodule
 
 `endif

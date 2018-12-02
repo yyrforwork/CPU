@@ -33,26 +33,26 @@ module Forward(
         output reg                    reg2_forward_enable
     );
 
-reg [`DATA_BUS] out1_data;
-reg [`DATA_BUS] out2_data;
+reg [`DATA_BUS] emo_data;
+reg [`DATA_BUS] mwo_data;
 
 always @(*) begin
     case(emo_wb_data_op)
-        `WB_DATA_OP_ALU : out1_data <= emo_alu_answer;
-        `WB_DATA_OP_MEM : out1_data <= `DATA_ZERO;
-        `WB_DATA_OP_IH  : out1_data <= emo_IH_wb_data;
-        `WB_DATA_OP_PC  : out1_data <= emo_PC_wb_data;
-        `WB_DATA_OP_NOP : out1_data <= `DATA_ZERO;
-        default: out1_data <= `DATA_ZERO;
+        `WB_DATA_OP_ALU : emo_data = emo_alu_answer;
+        `WB_DATA_OP_MEM : emo_data = `DATA_ZERO;
+        `WB_DATA_OP_IH  : emo_data = emo_IH_wb_data;
+        `WB_DATA_OP_PC  : emo_data = emo_PC_wb_data;
+        `WB_DATA_OP_NOP : emo_data = `DATA_ZERO;
+        default: emo_data = `DATA_ZERO;
     endcase
 
     case(mwo_wb_data_op)
-        `WB_DATA_OP_ALU : out2_data <= mwo_alu_answer;
-        `WB_DATA_OP_MEM : out2_data <= mwo_ram_read_answer;
-        `WB_DATA_OP_IH  : out2_data <= mwo_IH_wb_data;
-        `WB_DATA_OP_PC  : out2_data <= mwo_PC_wb_data;
-        `WB_DATA_OP_NOP : out2_data <= `DATA_ZERO;
-        default: out2_data <= `DATA_ZERO;
+        `WB_DATA_OP_ALU : mwo_data = mwo_alu_answer;
+        `WB_DATA_OP_MEM : mwo_data = mwo_ram_read_answer;
+        `WB_DATA_OP_IH  : mwo_data = mwo_IH_wb_data;
+        `WB_DATA_OP_PC  : mwo_data = mwo_PC_wb_data;
+        `WB_DATA_OP_NOP : mwo_data = `DATA_ZERO;
+        default: mwo_data = `DATA_ZERO;
     endcase
 end
 
@@ -64,96 +64,126 @@ always @(*) begin
                 begin
                     if (reg1_addr == emo_wb_addr)
                     begin
-                        reg1_forward_data   <= out1_data;
-                        reg1_forward_enable <= `FORWARD_ENABLE;
+                        reg1_forward_data   = emo_data;
+                        reg1_forward_enable = `FORWARD_ENABLE;
                     end else begin
-                        reg1_forward_data   <= `DATA_ZERO;
-                        reg1_forward_enable <= `FORWARD_DISABLE;
+                        reg1_forward_data   = `DATA_ZERO;
+                        reg1_forward_enable = `FORWARD_DISABLE;
                     end
                 end else begin
-                    reg1_forward_data   <= `DATA_ZERO;
-                    reg1_forward_enable <= `FORWARD_DISABLE;
+                    reg1_forward_data   = `DATA_ZERO;
+                    reg1_forward_enable = `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `DATA_ZERO;
-                reg2_forward_enable <= `FORWARD_DISABLE;
             end
-        // `REG_OP_IH:
-        //     begin
-        //         if (op1_mux_op == `ALU_A_OP_IH)
-        //         begin
-        //             reg1_forward_data   <= out1_data; 
-        //             reg1_forward_enable <= `FORWARD_ENABLE;
-        //         end else begin
-        //             reg1_forward_data   <= `DATA_ZERO;
-        //             reg1_forward_enable <= `FORWARD_DISABLE;
-        //         end
-        //         reg2_forward_data   <= `DATA_ZERO;
-        //         reg2_forward_enable <= `FORWARD_DISABLE;
-        //     end
         `REG_OP_SP:
             begin
                 if (op1_mux_op == `ALU_A_OP_SP)
                 begin
-                    reg1_forward_data   <= out1_data;
-                    reg1_forward_enable <= `FORWARD_ENABLE;
+                    reg1_forward_data   = emo_data;
+                    reg1_forward_enable = `FORWARD_ENABLE;
                 end else begin
-                    reg1_forward_data   <= `DATA_ZERO;
-                    reg1_forward_enable <= `FORWARD_DISABLE;
+                    reg1_forward_data   = `DATA_ZERO;
+                    reg1_forward_enable = `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `DATA_ZERO;
-                reg2_forward_enable <= `FORWARD_DISABLE;
             end
         `REG_OP_T:
             begin
                 if (op1_mux_op == `ALU_A_OP_T)
                 begin
-                    reg1_forward_data   <= out1_data;
-                    reg1_forward_enable <= `FORWARD_ENABLE;
+                    reg1_forward_data   = emo_data;
+                    reg1_forward_enable = `FORWARD_ENABLE;
                 end else begin
-                    reg1_forward_data   <= `DATA_ZERO;
-                    reg1_forward_enable <= `FORWARD_DISABLE;
+                    reg1_forward_data   = `DATA_ZERO;
+                    reg1_forward_enable = `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `DATA_ZERO;
-                reg2_forward_enable <= `FORWARD_DISABLE;
             end
-        default: 
+        default:
             begin
-                reg1_forward_data   <= `DATA_ZERO;
-                reg1_forward_enable <= `FORWARD_DISABLE;
-                reg2_forward_data   <= `DATA_ZERO;
-                reg2_forward_enable <= `FORWARD_DISABLE;
+                reg1_forward_data   = `DATA_ZERO;
+                reg1_forward_enable = `FORWARD_DISABLE;
             end
     endcase
 
-    case(mwo_reg_op)
+    if(~reg1_forward_enable) begin
+        case(mwo_reg_op)
+            `REG_OP_REG:
+                begin
+                    if (op1_mux_op == `ALU_A_OP_REGA)
+                    begin
+                        if (reg1_addr == mwo_wb_addr)
+                        begin
+                            reg1_forward_data   = mwo_data;
+                            reg1_forward_enable = `FORWARD_ENABLE;
+                        end else begin
+                            reg1_forward_data   = `DATA_ZERO;
+                            reg1_forward_enable = `FORWARD_DISABLE;
+                        end
+                    end else begin
+                        reg1_forward_data   = `DATA_ZERO;
+                        reg1_forward_enable = `FORWARD_DISABLE;
+                    end
+                end
+
+            default: 
+                begin
+                    reg1_forward_data   = `DATA_ZERO;
+                    reg1_forward_enable = `FORWARD_DISABLE;
+                end
+        endcase
+    end
+
+    case(emo_reg_op)
         `REG_OP_REG:
             begin
-                if (op2_mux_op == `ALU_A_OP_REGA)
+                if (op2_mux_op == `ALU_B_OP_REGB)
                 begin
-                    if (reg1_addr == emo_wb_addr)
+                    if (reg2_addr == emo_wb_addr)
                     begin
-                        reg1_forward_data   <= out1_data;
-                        reg1_forward_enable <= `FORWARD_ENABLE;
+                        reg2_forward_data   = emo_data;
+                        reg2_forward_enable = `FORWARD_ENABLE;
                     end else begin
-                        reg1_forward_data   <= `DATA_ZERO;
-                        reg1_forward_enable <= `FORWARD_DISABLE;
+                        reg2_forward_data   = `DATA_ZERO;
+                        reg2_forward_enable = `FORWARD_DISABLE;
                     end
                 end else begin
-                    reg1_forward_data   <= `DATA_ZERO;
-                    reg1_forward_enable <= `FORWARD_DISABLE;
+                    reg2_forward_data   = `DATA_ZERO;
+                    reg2_forward_enable = `FORWARD_DISABLE;
                 end
-                reg2_forward_data   <= `DATA_ZERO;
-                reg2_forward_enable <= `FORWARD_DISABLE;
             end
-
-        default: 
+        default:
             begin
-                reg1_forward_data   <= `DATA_ZERO;
-                reg1_forward_enable <= `FORWARD_DISABLE;
-                reg2_forward_data   <= `DATA_ZERO;
-                reg2_forward_enable <= `FORWARD_DISABLE;
+                reg2_forward_data   = `DATA_ZERO;
+                reg2_forward_enable = `FORWARD_DISABLE;
             end
     endcase
+
+    if(~reg2_forward_enable) begin
+        case(mwo_reg_op)
+            `REG_OP_REG:
+                begin
+                    if (op2_mux_op == `ALU_B_OP_REGB)
+                    begin
+                        if (reg2_addr == mwo_wb_addr)
+                        begin
+                            reg2_forward_data   = mwo_data;
+                            reg2_forward_enable = `FORWARD_ENABLE;
+                        end else begin
+                            reg2_forward_data   = `DATA_ZERO;
+                            reg2_forward_enable = `FORWARD_DISABLE;
+                        end
+                    end else begin
+                        reg2_forward_data   = `DATA_ZERO;
+                        reg2_forward_enable = `FORWARD_DISABLE;
+                    end
+                end
+
+            default: 
+                begin
+                    reg2_forward_data   = `DATA_ZERO;
+                    reg2_forward_enable = `FORWARD_DISABLE;
+                end
+        endcase
+    end
 end
 
 endmodule
