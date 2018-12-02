@@ -29,6 +29,8 @@
 `include "sram.v"
 `include "WB_Addr_Mux.v"
 `include "WB_Data_Mux.v"
+`include "RAM_SIM1.v"
+`include "RAM_SIM2.v"
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // CPU
@@ -191,6 +193,12 @@ PC_Jump_Mux pc_jump_mux(
     .PC_new(pc_new)
     );
 
+//
+wire[`INST_BUS] ram1_out_inst;
+RAM_SIM1 ram_sim1(
+    .pc(pc_out_pc),
+    .inst(ram1_out_inst)
+    );
 //############# IF end
 
 //############# IF/ID #################
@@ -204,7 +212,7 @@ wire[`PC_BUS] iio_pca;
 
 assign iii_pause = p_c_out_ii_pause;
 assign iii_clear = ii_clear;
-assign iii_inst = inst_ram_out_inst;
+assign iii_inst = ram1_out_inst;
 assign iii_pca = pc_a_out_pc;
 
 IF_ID if_id(
@@ -706,6 +714,14 @@ EXE_MEM em(
 //############# end
 
 //############# MEM ###################
+wire[`DATA_BUS] ram_out_data;
+RAM_SIM2 ram_sim2(
+    .ram_en(emo_ram_en),
+    .ram_op(emo_ram_op),
+    .addr(emo_alu_data),
+    .w_data(emo_ram_wb_data),
+    .r_data(ram_out_data)
+    );
 
 //############# MEM/WB ################
 wire[`WB_DATA_OP_BUS] mwi_wb_data_op;
@@ -721,7 +737,7 @@ assign mwi_reg_op = emo_reg_op;
 assign mwi_ih = emo_ih;
 assign mwi_pc = emo_pc;
 assign mwi_alu_data = emo_alu_data;
-assign mwi_ram_data = ram1_ctl_data_o;
+assign mwi_ram_data = ram_out_data;
 assign mwi_wb_addr = emo_wb_addr;
 
 MEM_WB mwm_wb(
