@@ -64,8 +64,8 @@ module CPU(
     // Other
    );
 
-rdn = 1'b0;
-wrn = 1'b0;
+assign rdn = 1'b0;
+assign wrn = 1'b0;
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // clk_25MHz
