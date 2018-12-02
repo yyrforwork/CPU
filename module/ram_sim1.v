@@ -13,8 +13,7 @@ module RAM_SIM1(
 
 reg [`INST_BUS] insts[0:15] ;
 initial begin
-assign insts[0] = 16'b1101_1111_0001_0101;
-//assign insts[1] = ;
+    insts[0] = 16'b1101_1111_0001_0101;
 end
 
 assign address = pc[3:0];

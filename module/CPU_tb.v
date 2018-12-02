@@ -5,34 +5,9 @@
 `define _CPU_TB_
 `include "define.v"
 
-`include "ALU_A_Mux.v"
-`include "ALU_B_Mux.v"
-`include "ALU.v"
-`include "Control.v"
 `include "CPU.v"
-`include "EXE_MEM.v"
-`include "Extender.v"
-`include "Forward.v"
-`include "ID_EXE.v"
-`include "IF_ID.v"
-`include "Im_Mux.v"
-`include "Jump_Add.v"
-`include "Jump_Control.v"
-`include "Jump_Data_Mux.v"
-`include "Jump_En_Mux.v"
-`include "MEM_WB.v"
-`include "Pause_Control.v"
-`include "PC_Adder.v"
-`include "PC_Jump_Mux.v"
-`include "PC.v"
-`include "RAM_Data_Mux.v"
-`include "REG_File.v"
-`include "sram.v"
-`include "WB_Addr_Mux.v"
-`include "WB_Data_Mux.v"
-`include "RAM_SIM1.v"
-`include "RAM_SIM2.v"
 
+module main;
 reg rst;
 reg clk;
 reg clk_50MHz;
@@ -71,7 +46,7 @@ CPU cpu_v1(
     .tbre(tbre),
     .data_ready(data_ready),
     .rdn(rdn),
-    .wr(wr)n
+    .wrn(wrn)
    );
 
 initial begin
@@ -87,3 +62,6 @@ always #45   begin clk_11MHz = ~clk_11MHz; end
 always #1000 begin clk = ~clk; end
 
 initial #10000 $finish;
+
+endmodule
+`endif
