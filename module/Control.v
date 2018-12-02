@@ -79,6 +79,7 @@ always @(*) begin
             endcase end
         `INST_SW:     inst_ctl_op <= `INST_CTL_SW;
         `INST_SW_SP:  inst_ctl_op <= `INST_CTL_SW_SP;
+        default:      inst_ctl_op <= `INST_CTL_NOP;
     endcase
 
     // arrange every operation signal
