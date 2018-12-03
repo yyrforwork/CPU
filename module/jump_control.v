@@ -7,13 +7,22 @@
 
 module Jump_Control(
         input      pc_jump_en,
-        output reg clear
+        output reg clear,
+        output reg pause
     );
 
 always @(*) begin
     case(pc_jump_en)
-        `PC_JUMP_ENABLE:  clear <= `CLEAR_ENABLE;
-        `PC_JUMP_DISABLE: clear <= `CLEAR_DISABLE;
+        `PC_JUMP_ENABLE:
+            begin
+                clear <= `CLEAR_ENABLE;
+                pause <= `PAUSE_ENABLE;
+            end
+        `PC_JUMP_DISABLE:
+            begin
+                clear <= `CLEAR_DISABLE;
+                pause <= `PAUSE_DISABLE;
+            end
     endcase
 end
 

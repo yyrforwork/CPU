@@ -179,9 +179,11 @@ PC_Adder pc_a(
 
 //jump control
 wire jump_en;
+wire jump_control_ie_pause;
 Jump_Control jump_ctl(
     .pc_jump_en(jump_en),
-    .clear(ii_clear)
+    .clear(ii_clear),
+    .pause(jump_control_ie_pause)
     );
 
 //pc jump mux
@@ -458,6 +460,7 @@ ID_EXE ie(
     .rst(rst),
     .clk_50MHz(clk_50MHz),
     .ie_PAUSE(iei_pause),
+    .jump_control_ie_PAUSE(jump_control_ie_pause),
 
     .inst(iei_inst),
     
@@ -779,15 +782,12 @@ WB_Data_Mux wb_data_mux(
     );
 
 initial begin
-    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x",
-        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc, jump_addr, jump_add_pc
-                        // p_c_in_wb_addr,
-                        // pc_pause,
-                        // wb_data,
-                        // ieo_reg_addr_rx,
-                        // emo_wb_addr,
-                        // emo_reg_op
-        );
+    // $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x",
+    //     $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
+    //                     , ieo_pc
+    //                     , im_out
+    //                     , jump_add_pc
+    //     );
 end
 
 endmodule

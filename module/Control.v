@@ -192,7 +192,7 @@ always @(*) begin
             RAM_en <= `RAM_DISABLE;
             jump_en_op <= `JUMP_EN_OP_ZEROJ;
             jump_data_op <= `JUMP_DATA_JANS;
-            im_op <= `IM_OP_NOP;
+            im_op <= `IM_OP_S_E_7_0;
             ram_data_op <= `RAM_DATA_OP_NOP;
         end
 
@@ -206,7 +206,7 @@ always @(*) begin
             RAM_en <= `RAM_DISABLE;
             jump_en_op <= `JUMP_EN_OP_NZEROJ;
             jump_data_op <= `JUMP_DATA_JANS;
-            im_op <= `IM_OP_NOP;
+            im_op <= `IM_OP_S_E_7_0;
             ram_data_op <= `RAM_DATA_OP_NOP;
         end
 
@@ -220,7 +220,7 @@ always @(*) begin
             RAM_en <= `RAM_DISABLE;
             jump_en_op <= `JUMP_EN_OP_ZEROJ;
             jump_data_op <= `JUMP_DATA_JANS;
-            im_op <= `IM_OP_NOP;
+            im_op <= `IM_OP_S_E_7_0;
             ram_data_op <= `RAM_DATA_OP_NOP;
         end
 

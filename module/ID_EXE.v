@@ -9,6 +9,7 @@ module ID_EXE(
     input                        rst,
     input                        clk_50MHz,
     input                        ie_PAUSE,
+    input                        jump_control_ie_PAUSE,
     input     [`INST_BUS]        inst,
     // wb op
     input     [`WB_DATA_OP_BUS]  n_ie_WB_DATA_op,
@@ -75,7 +76,7 @@ module ID_EXE(
     );
 
     always @(posedge clk_50MHz or negedge rst) begin
-        if (~rst) begin
+        if (~rst || jump_control_ie_PAUSE == `PAUSE_ENABLE) begin
             ie_WB_DATA_op <= `WB_DATA_OP_NOP;
             ie_REG_op  <= `REG_OP_NOP;
             
