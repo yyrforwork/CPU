@@ -549,6 +549,7 @@ wire[`DATA_BUS] mwo_ih;
 wire[`DATA_BUS] mwo_pc;
 wire[`DATA_BUS] mwo_alu_data;
 wire[`DATA_BUS] mwo_ram_data;
+wire[`DATA_BUS] forward_out_ih;
 Forward forward_ctrl(
     .emo_PC_wb_data(emo_pc),
     .mwo_PC_wb_data(mwo_pc),
@@ -574,7 +575,10 @@ Forward forward_ctrl(
     .reg2_forward_data(reg2_forward_data),
 
     .reg1_forward_enable(reg1_forward_enable),
-    .reg2_forward_enable(reg2_forward_enable)
+    .reg2_forward_enable(reg2_forward_enable),
+
+    .ieo_ih(ieo_ih),
+    .emi_ih(forward_out_ih)
     );
 
 //im mux
@@ -688,7 +692,7 @@ assign emi_ram_en = ieo_ram_en;
 assign emi_ram_op = ieo_ram_op;
 assign emi_wb_data_op = ieo_wb_data_op;
 assign emi_reg_op = ieo_reg_op;
-assign emi_ih = ieo_ih;
+assign emi_ih = forward_out_ih;
 assign emi_pc = ieo_pc;
 assign emi_alu_data = alu_answer;
 assign emi_ram_wb_data = ram_data;
