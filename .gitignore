@@ -1,6 +1,7 @@
 \~*
 *
 !module/
+!test/
 !*.vsdx
 !*.vssx
 !*.xlsx
