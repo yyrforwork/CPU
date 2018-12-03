@@ -62,7 +62,8 @@ always #10   begin clk_50MHz = ~clk_50MHz; end
 always #45   begin clk_11MHz = ~clk_11MHz; end
 always #1000 begin clk = ~clk; end
 
-initial #200 $finish;
+initial #2000 $finish;
 
 endmodule
+
 `endif

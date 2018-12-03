@@ -779,14 +779,14 @@ WB_Data_Mux wb_data_mux(
     );
 
 initial begin
-    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x %x %x",
-        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc,
-                        p_c_in_wb_addr,
-                        pc_pause,
-                        wb_data,
-                        ieo_reg_addr_rx,
-                        emo_wb_addr,
-                        emo_reg_op
+    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x",
+        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc, jump_addr, jump_add_pc
+                        // p_c_in_wb_addr,
+                        // pc_pause,
+                        // wb_data,
+                        // ieo_reg_addr_rx,
+                        // emo_wb_addr,
+                        // emo_reg_op
         );
 end
 

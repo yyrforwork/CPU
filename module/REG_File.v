@@ -65,6 +65,10 @@ begin
     end
 end
 
+initial begin
+    $monitor("%dns c=%x,r=%x, watch=%x %x %x %x",
+        $stime, clk_50MHz, rst, regs[1], regs[2], regs[3], regs[4]);
+end
 endmodule
 
 `endif
