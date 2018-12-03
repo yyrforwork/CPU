@@ -23,7 +23,7 @@ always@(a or b or op) begin
     `ALU_OP_NOT:  y <= ~ a;   // NOT
     `ALU_OP_RETA: y <= a;     // RETA
     `ALU_OP_RETB: y <= b;     // RETB
-    `ALU_OP_EQU:  y <= a==b;  // EQU
+    `ALU_OP_EQU:  y <= !(a==b);  // EQU
     `ALU_OP_SLL:  y <= b <<(a==0 ? 8 : a); // SLL
     `ALU_OP_SLLV: y <= b <<a;              // SLLV
     `ALU_OP_SRA:  y <= b>>>(a==0 ? 8 : a); // SRA

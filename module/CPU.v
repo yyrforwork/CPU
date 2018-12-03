@@ -285,7 +285,7 @@ wire[`DATA_BUS] reg_files_out_ra_data;
 
 wire[`REG_ADDR_BUS] mwo_wb_addr;
 wire[`DATA_BUS] wb_data;
-wire[`REG_ADDR_BUS] mwo_reg_op;
+wire[`REG_OP_BUS] mwo_reg_op;
 
 assign reg_files_in_a_addr = iio_inst[`INST_RX_ADDR];
 assign reg_files_in_b_addr = iio_inst[`INST_RY_ADDR];
@@ -782,11 +782,12 @@ WB_Data_Mux wb_data_mux(
     );
 
 initial begin
-    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x",
+    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x",
         $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
                         , ieo_pc
-                        , im_out
-                        , jump_add_pc
+                        , wb_addr
+                        , wb_data
+                        , mwo_reg_op
         );
 end
 
