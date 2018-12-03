@@ -31,6 +31,9 @@ module Forward(
             
         output reg                    reg1_forward_enable,
         output reg                    reg2_forward_enable
+        //IH part
+        input      [`DATA_BUS]        ieo_ih;
+        output reg [`DATA_BUS]        emi_ih;
     );
 
 reg [`DATA_BUS] emo_data;
@@ -204,6 +207,16 @@ always @(*) begin
                     reg2_forward_enable = `FORWARD_DISABLE;
                 end
         endcase
+    end
+
+    if (emo_reg_op == `REG_OP_IH) 
+        emi_ih = emo_data;
+    else begin
+        if (mwo_reg_op == `REG_OP_IH)
+            emi_ih = mwo_data;
+        else begin
+            emi_ih = ieo_ih;
+        end
     end
 end
 
