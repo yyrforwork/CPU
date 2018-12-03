@@ -65,10 +65,10 @@ begin
     end
 end
 
-initial begin
-    $monitor("%dns c=%x,r=%x, watch=%d %d %d %d",
-        $stime, clk_50MHz, rst, regs[1], regs[2], regs[3], regs[4]);
-end
+// initial begin
+//     $monitor("%dns c=%x,r=%x, watch=%d %d %d %d",
+//         $stime, clk_50MHz, rst, regs[1], regs[2], regs[3], reg_T);
+// end
 endmodule
 
 `endif

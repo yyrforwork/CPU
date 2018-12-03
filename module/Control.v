@@ -58,7 +58,7 @@ always @(*) begin
                 5'b01101: inst_ctl_op <= `INST_CTL_OR;
                 5'b00100: inst_ctl_op <= `INST_CTL_SLLV;
             endcase end
-        `INST_B:      inst_ctl_op <= `INST_CTL_ADDIU;
+        `INST_B:      inst_ctl_op <= `INST_CTL_B;
         `INST_BEQZ:   inst_ctl_op <= `INST_CTL_BEQZ;
         `INST_BNEZ:   inst_ctl_op <= `INST_CTL_BNEZ;
         `INST_CMPI:   inst_ctl_op <= `INST_CTL_CMPI;

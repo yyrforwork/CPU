@@ -782,12 +782,12 @@ WB_Data_Mux wb_data_mux(
     );
 
 initial begin
-    // $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x",
-    //     $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
-    //                     , ieo_pc
-    //                     , im_out
-    //                     , jump_add_pc
-    //     );
+    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x",
+        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
+                        , ieo_pc
+                        , im_out
+                        , jump_add_pc
+        );
 end
 
 endmodule
