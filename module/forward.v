@@ -123,7 +123,28 @@ always @(*) begin
                         reg1_forward_enable = `FORWARD_DISABLE;
                     end
                 end
-
+            `REG_OP_SP:
+                begin
+                    if (op1_mux_op == `ALU_A_OP_SP)
+                    begin
+                        reg1_forward_data   = mwo_data;
+                        reg1_forward_enable = `FORWARD_ENABLE;
+                    end else begin
+                        reg1_forward_data   = `DATA_ZERO;
+                        reg1_forward_enable = `FORWARD_DISABLE;
+                    end
+                end
+            `REG_OP_T:
+                begin
+                    if (op1_mux_op == `ALU_A_OP_T)
+                    begin
+                        reg1_forward_data   = mwo_data;
+                        reg1_forward_enable = `FORWARD_ENABLE;
+                    end else begin
+                        reg1_forward_data   = `DATA_ZERO;
+                        reg1_forward_enable = `FORWARD_DISABLE;
+                    end
+                end
             default: 
                 begin
                     reg1_forward_data   = `DATA_ZERO;
