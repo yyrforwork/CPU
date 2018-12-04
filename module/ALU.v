@@ -26,7 +26,14 @@ always@(a or b or op) begin
     `ALU_OP_EQU:  y <= !(a==b);  // EQU
     `ALU_OP_SLL:  y <= b <<(a==0 ? 8 : a); // SLL
     `ALU_OP_SLLV: y <= b <<a;              // SLLV
-    `ALU_OP_SRA:  y <= b>>>(a==0 ? 8 : a); // SRA
+    // `ALU_OP_SRA:  y <= b>>>(a==0 ? 8 : a); // SRA
+    `ALU_OP_SRA: 
+        begin
+            if (a==0)
+                y <= ({16{b[15]}} << 8 )  | (b >> 8); // SRA
+            else
+                y <= ({16{b[15]}} << (5'd16 - {1'b0, a[3:0]} ) ) | (b >> a[3:0]); // SRA
+        end
     `ALU_OP_SRL:  y <= b >>(a==0 ? 8 : a); // SRL
     `ALU_OP_NOP:  y <= y;                  // NOP
   endcase
