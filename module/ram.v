@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 
-`ifdef _SRAM_
+`ifdef _RAM_
 `else
-`define _SRAM_
+`define _RAM_
 `include "define.v"
 
-module sram(
+module ram(
         input                  rst,      // reset signal
         input                  clk_50MHz,// system clock 50 MHz
 
@@ -34,9 +34,7 @@ module sram(
         input                  tbre,
         input                  data_ready,
 
-        output                 pc_pause,
-        output                 if_id_pause
-
+        output                 ram_pause,
     );
 
 reg state;

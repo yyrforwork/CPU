@@ -197,10 +197,10 @@ PC_Jump_Mux pc_jump_mux(
 
 //
 wire[`INST_BUS] ram1_out_inst;
-RAM_SIM1 ram_sim1(
-    .pc(pc_out_pc),
-    .inst(ram1_out_inst)
-    );
+// RAM_SIM1 ram_sim1(
+//     .pc(pc_out_pc),
+//     .inst(ram1_out_inst)
+//     );
 //############# IF end
 
 //############# IF/ID #################
@@ -337,6 +337,7 @@ wire[`REG_ADDR_BUS] p_c_in_reg2_addr;
 wire[`ALU_A_OP_BUS] p_c_in_alu_a_op;
 wire[`ALU_B_OP_BUS] p_c_in_alu_b_op;
 wire[`REG_ADDR_BUS] wb_addr;
+wire ram_pause;
 
 assign p_c_in_reg_op = mco_reg_op;
 assign p_c_in_wb_addr = wb_addr;
@@ -354,7 +355,8 @@ Pause_Control p_c(
     .REGB_addr(p_c_in_reg2_addr),
     .ALU_A_op(p_c_in_alu_a_op),
     .ALU_B_op(p_c_in_alu_b_op),
-
+    .ram_pause(ram_pause),
+    
     .PC_pause(p_c_out_pc_pause),
     .ii_pause(p_c_out_ii_pause),
     .ie_pause(p_c_out_ie_pause)
@@ -724,15 +726,42 @@ EXE_MEM em(
 //############# end
 
 //############# MEM ###################
+// RAM_SIM2 ram_sim2(
+//     .ram_en(emo_ram_en),
+//     .ram_op(emo_ram_op),
+//     .addr(emo_alu_data),
+//     .w_data(emo_ram_wb_data),
+//     .r_data(ram_out_data)
+    // );
+ 
 wire[`DATA_BUS] ram_out_data;
-RAM_SIM2 ram_sim2(
-    .ram_en(emo_ram_en),
-    .ram_op(emo_ram_op),
-    .addr(emo_alu_data),
-    .w_data(emo_ram_wb_data),
-    .r_data(ram_out_data)
-    );
 
+RAM ram(
+    .rst(rst),
+    .clk_50MHz(clk_50MHz),
+    .sram1_data(ram1_data),
+    .sram1_addr(ram1_addr),
+    .sram1_en(ram1_en),
+    .sram1_oe(ram1_oe),
+    .sram1_we(ram1_we),
+    .sram2_data(ram2_data),
+    .sram2_addr(ram2_addr),
+    .sram2_en(ram2_en),
+    .sram2_oe(ram2_oe),
+    .sram2_we(ram2_we),
+    .data_o(ram_out_data),
+    .data_i(emo_ram_wb_data),
+    .addr(emo_alu_data),
+    .op(emo_ram_op),
+    .en(emo_ram_en),
+    .pc(pc_out_pc),
+    .inst(ram1_out_inst),
+    .tsre(tsre),
+    .tbre(tbre),
+    .data_ready(data_ready),
+    .ram_pause(ram_pause)
+
+    )
 //############# MEM/WB ################
 wire[`WB_DATA_OP_BUS] mwi_wb_data_op;
 wire[`REG_OP_BUS] mwi_reg_op;
