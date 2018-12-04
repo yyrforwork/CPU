@@ -67,8 +67,8 @@ module CPU(
     // Other
    );
 
-assign rdn = 1'b0;
-assign wrn = 1'b0;
+// assign rdn = 1'b0;
+// assign wrn = 1'b0;
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // clk_25MHz
@@ -338,6 +338,7 @@ wire[`REG_ADDR_BUS] p_c_in_reg2_addr;
 wire[`ALU_A_OP_BUS] p_c_in_alu_a_op;
 wire[`ALU_B_OP_BUS] p_c_in_alu_b_op;
 wire[`REG_ADDR_BUS] wb_addr;
+wire[`WB_DATA_OP_BUS] ieo_wb_data_op;
 wire ram_pause;
 
 assign p_c_in_reg_op = mco_reg_op;
@@ -396,7 +397,6 @@ wire[`DATA_BUS] iei_s_e_3_0;
 wire[`DATA_BUS] iei_z_e_7_0;
 
 //******************************************
-wire[`WB_DATA_OP_BUS] ieo_wb_data_op;
 wire[`REG_OP_BUS] ieo_reg_op;
 wire ieo_ram_en;
 wire ieo_ram_op;

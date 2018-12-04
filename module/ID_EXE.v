@@ -76,7 +76,7 @@ module ID_EXE(
     );
 
     always @(posedge clk_50MHz or negedge rst) begin
-        if (~rst || jump_control_ie_PAUSE == `PAUSE_ENABLE) begin
+        if (~rst) begin
             ie_WB_DATA_op <= `WB_DATA_OP_NOP;
             ie_REG_op  <= `REG_OP_NOP;
             
@@ -96,7 +96,27 @@ module ID_EXE(
 
         end
         else
-        if (ie_PAUSE != `PAUSE_ENABLE) begin
+        if ( jump_control_ie_PAUSE == `PAUSE_ENABLE)begin
+            ie_WB_DATA_op <= `WB_DATA_OP_NOP;
+            ie_REG_op  <= `REG_OP_NOP;
+            
+            //mem op
+            ie_RAM_en  <= `RAM_DISABLE;
+            ie_RAM_op  <= `RAM_OP_RD;
+
+            //exe op
+            ie_ALU_op       <= `ALU_OP_NOP;   
+            ie_JUMP_DATA_op <= `JUMP_DATA_NOP;
+            ie_JUMP_EN_op   <= `JUMP_EN_OP_NOP;
+            ie_ALU_A_op     <= `ALU_A_OP_NOP;
+            ie_ALU_B_op     <= `ALU_B_OP_NOP;
+            ie_IM_op        <= `IM_OP_NOP;
+            ie_WB_ADDR_op   <= `WB_ADDR_OP_NOP;
+            ie_RAM_DATA_op  <= `RAM_DATA_OP_NOP;
+            
+        end
+        else if (ie_PAUSE != `PAUSE_ENABLE) 
+        begin
             //wb op
             ie_WB_DATA_op <= n_ie_WB_DATA_op;
             ie_REG_op  <= n_ie_REG_op;

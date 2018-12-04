@@ -79,7 +79,7 @@ always @(*) begin
     else 
         ram1_en <= `DISABLE;
         ram2_op <= `PC;
-        com = `DISABLE;
+        com <= `DISABLE;
         ram_pause <= `PAUSE_DISABLE;
     end
 
@@ -91,7 +91,7 @@ always @(*) begin
             sram1_en <= 1'b0;
             sram1_oe <= 1'b0;
             sram1_we <= 1'b1;
-            sram1_addr = addr;
+            sram1_addr <= addr;
         end
         else//write
         begin
@@ -131,7 +131,7 @@ always @(*) begin
             sram2_en <= 1'b0;
             sram2_oe <= 1'b0;
             sram2_we <= 1'b1;
-            sram2_addr = addr;
+            sram2_addr <= addr;
         end
         else
         //if (op == `RAM_OP_WR)
