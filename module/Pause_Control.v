@@ -13,6 +13,8 @@ module Pause_Control(
         input      [`REG_ADDR_BUS]   REGB_addr,
         input      [`ALU_A_OP_BUS]   ALU_A_op,
         input      [`ALU_B_OP_BUS]   ALU_B_op,
+
+        input                        ram_pause,
         output reg                   PC_pause,
         output reg                   ii_pause,
         output reg                   ie_pause
@@ -26,8 +28,8 @@ always @(*) begin
         ii_pause <= `PAUSE_ENABLE;
         ie_pause <= `PAUSE_ENABLE;
     end else begin
-        PC_pause <= `PAUSE_DISABLE;
-        ii_pause <= `PAUSE_DISABLE;
+        PC_pause <= `PAUSE_DISABLE | ram_pause;
+        ii_pause <= `PAUSE_DISABLE | ram_pause;
         ie_pause <= `PAUSE_DISABLE;
     end
 end

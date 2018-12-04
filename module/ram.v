@@ -25,7 +25,7 @@ module ram(
         input      [`DATA_BUS] data_i,   // data in
         input      [`ADDR_BUS] addr,     // address in
         input                  op,       // operation
-        input                  en        // enable
+        input                  en,       // enable
 
         input      [`PC_BUS]   pc,
         output     [`INST_BUS] inst,
@@ -34,7 +34,9 @@ module ram(
         input                  tbre,
         input                  data_ready,
 
-        output                 ram_pause,
+        output reg             rdn,
+        output reg             wrn,
+        output reg             ram_pause
     );
 
 reg state;
@@ -56,8 +58,7 @@ always @(*) begin
             ram1_en <= `DISABLE;
             ram2_op <= `PC;
             com <= `ENABLE;
-            pc_pause <= `PAUSE_DISABLE;
-            if_id_pause <= `PAUSE_DISABLE;
+            ram_pause <= `PAUSE_DISABLE;
         end
         else
             if (addr < 18'h8000)
@@ -65,24 +66,21 @@ always @(*) begin
                 ram1_en <= `DISABLE;
                 ram2_op <= `RAM;
                 com <= `DISABLE;
-                pc_pause <= `PAUSE_ENABLE;
-                if_id_pause <= `PAUSE_ENABLE; 
+                ram_pause <= `PAUSE_ENABLE;
             end
             else
                 begin
-                   ram1_en <= `ENABLE;
-                   ram2_op <= `PC;
-                   com <=`DISABLE; 
-                    pc_pause <= `PAUSE_DISABLE;
-                    if_id_pause <= `PAUSE_DISABLE;
+                    ram1_en <= `ENABLE;
+                    ram2_op <= `PC;
+                    com <=`DISABLE; 
+                    ram_pause <= `PAUSE_DISABLE;
                 end
     end
     else 
         ram1_en <= `DISABLE;
         ram2_op <= `PC;
         com = `DISABLE;
-        pc_pause <= `PAUSE_DISABLE;
-        if_id_pause <= `PAUSE_DISABLE;
+        ram_pause <= `PAUSE_DISABLE;
     end
 
 //sram1_r&w
@@ -100,7 +98,7 @@ always @(*) begin
             sram1_en <= 1'b0;
             sram1_oe <= 1'b1;
             sram1_addr <= addr;
-            if (clk == 1'b0)
+            if (clk_50MHz == 1'b0)
             begin
                 sram1_we <= 1'b0;
             end
@@ -124,7 +122,7 @@ always @(*) begin
         sram2_en <= 1'b0;
         sram2_oe <= 1'b0;
         sram2_we <= 1'b1;
-        sram2_addr <= pc;
+        sram2_addr <= {2'b00, pc};
     end
     else if (ram2_op == `RAM) 
     begin
@@ -141,7 +139,7 @@ always @(*) begin
             sram2_en <= 1'b0;
             sram2_oe <= 1'b1;
             sram2_addr <= addr;
-            if (clk == 1'b0)
+            if (clk_50MHz == 1'b0)
             begin
                 sram2_we <= 1'b0;
             end
@@ -154,7 +152,7 @@ end
 
 //com r&w
 always @(*) begin
-    if (c == `ENABLE) 
+    if (com == `ENABLE) 
     begin
         if (sram1_en ==1'b1 && sram1_we == 1'b1 && sram1_oe == 1'b1 ) begin
             if (op == `RAM_OP_RD)
@@ -167,7 +165,7 @@ always @(*) begin
             //if (op == `RAM_OP_WR)
             begin
                 rdn <= 1'b1;
-                if (clk == 1'b0)
+                if (clk_50MHz == 1'b0)
                 begin
                     wrn <= 1'b0;
                 end

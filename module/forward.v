@@ -30,10 +30,10 @@ module Forward(
         output reg [`DATA_BUS]        reg2_forward_data,
             
         output reg                    reg1_forward_enable,
-        output reg                    reg2_forward_enable
+        output reg                    reg2_forward_enable,
         //IH part
-        input      [`DATA_BUS]        ieo_ih;
-        output reg [`DATA_BUS]        emi_ih;
+        input      [`DATA_BUS]        ieo_ih,
+        output reg [`DATA_BUS]        emi_ih
     );
 
 reg [`DATA_BUS] emo_data;
