@@ -5,4 +5,5 @@
 !*.vsdx
 !*.vssx
 !*.xlsx
+!ram.v
 *\~
