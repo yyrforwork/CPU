@@ -351,9 +351,9 @@ always @(*) begin
         end
 
         `INST_CTL_MTSP: begin
-            ALU_op <= `ALU_OP_RETA;
-            ALU_A_op <= `ALU_A_OP_REGA;
-            ALU_B_op <= `ALU_B_OP_NOP;
+            ALU_op <= `ALU_OP_RETB;
+            ALU_A_op <= `ALU_A_OP_NOP;
+            ALU_B_op <= `ALU_B_OP_REGB;
             REG_op <= `REG_OP_SP;
             wb_data_op <= `WB_DATA_OP_ALU;
             wb_addr_op <= `WB_ADDR_OP_NOP;
