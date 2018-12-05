@@ -96,7 +96,8 @@ module ID_EXE(
 
         end
         else
-        if ( jump_control_ie_PAUSE == `PAUSE_ENABLE)begin
+        if ( jump_control_ie_PAUSE == `PAUSE_ENABLE || ie_PAUSE == `PAUSE_ENABLE) 
+        begin
             ie_WB_DATA_op <= `WB_DATA_OP_NOP;
             ie_REG_op  <= `REG_OP_NOP;
             
@@ -115,7 +116,7 @@ module ID_EXE(
             ie_RAM_DATA_op  <= `RAM_DATA_OP_NOP;
             
         end
-        else if (ie_PAUSE != `PAUSE_ENABLE) 
+        else  
         begin
             //wb op
             ie_WB_DATA_op <= n_ie_WB_DATA_op;

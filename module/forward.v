@@ -26,11 +26,16 @@ module Forward(
         input      [`WB_DATA_OP_BUS]  emo_wb_data_op,
         input      [`WB_DATA_OP_BUS]  mwo_wb_data_op,
 
+        input      [`RAM_DATA_OP_BUS] ram_data_op,
+
         output reg [`DATA_BUS]        reg1_forward_data,
         output reg [`DATA_BUS]        reg2_forward_data,
-            
+        output reg [`DATA_BUS]        mux_forward_data,
+
         output reg                    reg1_forward_enable,
         output reg                    reg2_forward_enable,
+        output reg                    mux_forward_enable,
+
         //IH part
         input      [`DATA_BUS]        ieo_ih,
         output reg [`DATA_BUS]        emi_ih
@@ -209,6 +214,50 @@ always @(*) begin
         endcase
     end
 
+    case(emo_reg_op)
+    `REG_OP_REG:
+        begin
+            if ((ram_data_op == `RAM_DATA_OP_REGA && reg1_addr == emo_wb_addr)
+            || (ram_data_op == `RAM_DATA_OP_REGB && reg2_addr == emo_wb_addr))
+            begin
+                mux_forward_data   = emo_data;
+                mux_forward_enable = `FORWARD_ENABLE;
+            end else 
+            begin
+                mux_forward_data   = `DATA_ZERO;
+                mux_forward_enable = `FORWARD_DISABLE;
+            end
+        end
+    default:
+        begin
+            mux_forward_data   = `DATA_ZERO;
+            mux_forward_enable = `FORWARD_DISABLE;
+        end
+    endcase
+
+    if (~mux_forward_enable) begin
+        case(mwo_reg_op)
+        `REG_OP_REG:
+            begin
+                if ((ram_data_op == `RAM_DATA_OP_REGA && reg1_addr == mwo_wb_addr)
+                || (ram_data_op == `RAM_DATA_OP_REGB && reg2_addr == mwo_wb_addr))
+                begin
+                    mux_forward_data   = mwo_data;
+                    mux_forward_enable = `FORWARD_ENABLE;
+                end else 
+                begin
+                    mux_forward_data   = `DATA_ZERO;
+                    mux_forward_enable = `FORWARD_DISABLE;
+                end
+            end
+        default:
+            begin
+                mux_forward_data   = `DATA_ZERO;
+                mux_forward_enable = `FORWARD_DISABLE;
+            end
+        endcase
+    end
+    
     if (emo_reg_op == `REG_OP_IH) 
         emi_ih = emo_data;
     else begin
