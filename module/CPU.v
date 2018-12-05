@@ -338,10 +338,12 @@ wire[`REG_ADDR_BUS] p_c_in_reg2_addr;
 wire[`ALU_A_OP_BUS] p_c_in_alu_a_op;
 wire[`ALU_B_OP_BUS] p_c_in_alu_b_op;
 wire[`REG_ADDR_BUS] wb_addr;
+wire[`REG_OP_BUS] ieo_reg_op;
 wire[`WB_DATA_OP_BUS] ieo_wb_data_op;
+wire[`RAM_DATA_OP_BUS] ieo_ram_data_op;
 wire ram_pause;
 
-assign p_c_in_reg_op = mco_reg_op;
+assign p_c_in_reg_op = ieo_reg_op;
 assign p_c_in_wb_addr = wb_addr;
 assign p_c_in_wb_data_op = ieo_wb_data_op;
 assign p_c_in_reg1_addr = iio_inst[`INST_RX_ADDR];
@@ -357,7 +359,8 @@ Pause_Control p_c(
     .REGB_addr(p_c_in_reg2_addr),
     .ALU_A_op(p_c_in_alu_a_op),
     .ALU_B_op(p_c_in_alu_b_op),
-    
+    .ram_data_op(ieo_ram_data_op),
+
     .ram_pause(ram_pause),
     .PC_pause(p_c_out_pc_pause),
     .ii_pause(p_c_out_ii_pause),
@@ -397,7 +400,6 @@ wire[`DATA_BUS] iei_s_e_3_0;
 wire[`DATA_BUS] iei_z_e_7_0;
 
 //******************************************
-wire[`REG_OP_BUS] ieo_reg_op;
 wire ieo_ram_en;
 wire ieo_ram_op;
 
@@ -408,7 +410,6 @@ wire[`ALU_A_OP_BUS] ieo_alu_a_op;
 wire[`ALU_B_OP_BUS] ieo_alu_b_op;
 wire[`IM_OP_BUS] ieo_im_op;
 wire[`WB_ADDR_OP_BUS] ieo_wb_addr_op;
-wire[`RAM_DATA_OP_BUS] ieo_ram_data_op;
 
 wire[`DATA_BUS] ieo_rega;
 wire[`DATA_BUS] ieo_regb;
@@ -553,6 +554,9 @@ wire[`DATA_BUS] mwo_pc;
 wire[`DATA_BUS] mwo_alu_data;
 wire[`DATA_BUS] mwo_ram_data;
 wire[`DATA_BUS] forward_out_ih;
+wire[`DATA_BUS] mux_forward_data;
+wire mux_forward_enable;
+
 Forward forward_ctrl(
     .emo_PC_wb_data(emo_pc),
     .mwo_PC_wb_data(mwo_pc),
@@ -573,12 +577,16 @@ Forward forward_ctrl(
     .mwo_reg_op(mwo_reg_op),
     .emo_wb_data_op(emo_wb_data_op),
     .mwo_wb_data_op(mwo_wb_data_op),
+    
+    .ram_data_op(ieo_ram_data_op),
 
     .reg1_forward_data(reg1_forward_data),
     .reg2_forward_data(reg2_forward_data),
+    .mux_forward_data(mux_forward_data),
 
     .reg1_forward_enable(reg1_forward_enable),
     .reg2_forward_enable(reg2_forward_enable),
+    .mux_forward_enable(mux_forward_enable),
 
     .ieo_ih(ieo_ih),
     .emi_ih(forward_out_ih)
@@ -671,7 +679,10 @@ RAM_Data_Mux ram_data_mux(
     .data_REGA(ieo_rega),
     .data_REGB(ieo_regb),
     .data_RA(ieo_ra),
+    .data_FOWD(mux_forward_data),
+
     .RAM_data_op(ieo_ram_data_op),
+    .forward_enable(mux_forward_enable),
     .RAM_data(ram_data)
     );
 //############# EXE end
