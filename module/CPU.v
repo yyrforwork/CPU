@@ -26,7 +26,8 @@
 `include "PC.v"
 `include "RAM_Data_Mux.v"
 `include "REG_File.v"
-`include "sram.v"
+// `include "sram.v"
+`include "ram.v"
 `include "WB_Addr_Mux.v"
 `include "WB_Data_Mux.v"
 `include "RAM_SIM1.v"
@@ -66,8 +67,8 @@ module CPU(
     // Other
    );
 
-assign rdn = 1'b0;
-assign wrn = 1'b0;
+// assign rdn = 1'b0;
+// assign wrn = 1'b0;
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // clk_25MHz
@@ -86,65 +87,65 @@ end
 // RAM1
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-// ram1 declaration
-wire[`DATA_BUS] ram1_ctl_data_o;
-reg [`DATA_BUS] ram1_ctl_data_i;
-reg [`ADDR_BUS] ram1_ctl_addr;
-reg ram1_ctl_op;
-reg ram1_ctl_en;
+// // ram1 declaration
+// wire[`DATA_BUS] ram1_ctl_data_o;
+// reg [`DATA_BUS] ram1_ctl_data_i;
+// reg [`ADDR_BUS] ram1_ctl_addr;
+// reg ram1_ctl_op;
+// reg ram1_ctl_en;
 
-// ram1 combination
-sram ram1(
-        .rst(rst),
-        .clk_50MHz(clk_50MHz),
+// // ram1 combination
+// sram ram1(
+//         .rst(rst),
+//         .clk_50MHz(clk_50MHz),
 
-        .sram_data(ram1_data),
-        .sram_addr(ram1_addr),
-        .sram_en(ram1_en),
-        .sram_oe(ram1_oe),
-        .sram_we(ram1_we),
+//         .sram_data(ram1_data),
+//         .sram_addr(ram1_addr),
+//         .sram_en(ram1_en),
+//         .sram_oe(ram1_oe),
+//         .sram_we(ram1_we),
 
-        .data_o(ram1_ctl_data_o),
-        .data_i(ram1_ctl_data_i),
-        .addr(ram1_ctl_addr),
-        .op(ram1_ctl_op),
-        .en(ram1_ctl_en)
-    );
+//         .data_o(ram1_ctl_data_o),
+//         .data_i(ram1_ctl_data_i),
+//         .addr(ram1_ctl_addr),
+//         .op(ram1_ctl_op),
+//         .en(ram1_ctl_en)
+//     );
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // RAM2
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-// ram2 declaration
-wire[`DATA_BUS] ram2_ctl_data_o;
-reg [`DATA_BUS] ram2_ctl_data_i;
-reg [`ADDR_BUS] ram2_ctl_addr;
-reg ram2_ctl_op;
-reg ram2_ctl_en;
+// // ram2 declaration
+// wire[`DATA_BUS] ram2_ctl_data_o;
+// reg [`DATA_BUS] ram2_ctl_data_i;
+// reg [`ADDR_BUS] ram2_ctl_addr;
+// reg ram2_ctl_op;
+// reg ram2_ctl_en;
 
-wire[`PC_BUS] inst_ram_in_addr;
-wire[`INST_BUS] inst_ram_out_inst;
-// ram2 combination
-sram ram2(
-        .rst(rst),
-        .clk_50MHz(clk_50MHz),
+// wire[`PC_BUS] inst_ram_in_addr;
+// wire[`INST_BUS] inst_ram_out_inst;
+// // ram2 combination
+// sram ram2(
+//         .rst(rst),
+//         .clk_50MHz(clk_50MHz),
 
-        .sram_data(ram2_data),
-        .sram_addr(ram2_addr),
-        .sram_en(ram2_en),
-        .sram_oe(ram2_oe),
-        .sram_we(ram2_we),
+//         .sram_data(ram2_data),
+//         .sram_addr(ram2_addr),
+//         .sram_en(ram2_en),
+//         .sram_oe(ram2_oe),
+//         .sram_we(ram2_we),
 
-        .data_o(ram2_ctl_data_o),
-        .data_i(ram2_ctl_data_i),
-        .addr(ram2_ctl_addr),
-        .op(ram2_ctl_op),
-        .en(ram2_ctl_en)
-    );
+//         .data_o(ram2_ctl_data_o),
+//         .data_i(ram2_ctl_data_i),
+//         .addr(ram2_ctl_addr),
+//         .op(ram2_ctl_op),
+//         .en(ram2_ctl_en)
+//     );
 
 
-assign inst_ram_in_addr = ram2_ctl_addr;
-assign inst_ram_out_inst = ram2_ctl_data_o;
+// assign inst_ram_in_addr = ram2_ctl_addr;
+// assign inst_ram_out_inst = ram2_ctl_data_o;
 
 wire p_c_out_pc_pause;
 wire p_c_out_ii_pause;
@@ -197,10 +198,10 @@ PC_Jump_Mux pc_jump_mux(
 
 //
 wire[`INST_BUS] ram1_out_inst;
-RAM_SIM1 ram_sim1(
-    .pc(pc_out_pc),
-    .inst(ram1_out_inst)
-    );
+// RAM_SIM1 ram_sim1(
+//     .pc(pc_out_pc),
+//     .inst(ram1_out_inst)
+//     );
 //############# IF end
 
 //############# IF/ID #################
@@ -337,8 +338,12 @@ wire[`REG_ADDR_BUS] p_c_in_reg2_addr;
 wire[`ALU_A_OP_BUS] p_c_in_alu_a_op;
 wire[`ALU_B_OP_BUS] p_c_in_alu_b_op;
 wire[`REG_ADDR_BUS] wb_addr;
+wire[`REG_OP_BUS] ieo_reg_op;
+wire[`WB_DATA_OP_BUS] ieo_wb_data_op;
+wire[`RAM_DATA_OP_BUS] ieo_ram_data_op;
+wire ram_pause;
 
-assign p_c_in_reg_op = mco_reg_op;
+assign p_c_in_reg_op = ieo_reg_op;
 assign p_c_in_wb_addr = wb_addr;
 assign p_c_in_wb_data_op = ieo_wb_data_op;
 assign p_c_in_reg1_addr = iio_inst[`INST_RX_ADDR];
@@ -354,7 +359,9 @@ Pause_Control p_c(
     .REGB_addr(p_c_in_reg2_addr),
     .ALU_A_op(p_c_in_alu_a_op),
     .ALU_B_op(p_c_in_alu_b_op),
+    .ram_data_op(ieo_ram_data_op),
 
+    .ram_pause(ram_pause),
     .PC_pause(p_c_out_pc_pause),
     .ii_pause(p_c_out_ii_pause),
     .ie_pause(p_c_out_ie_pause)
@@ -393,8 +400,6 @@ wire[`DATA_BUS] iei_s_e_3_0;
 wire[`DATA_BUS] iei_z_e_7_0;
 
 //******************************************
-wire[`WB_DATA_OP_BUS] ieo_wb_data_op;
-wire[`REG_OP_BUS] ieo_reg_op;
 wire ieo_ram_en;
 wire ieo_ram_op;
 
@@ -405,7 +410,6 @@ wire[`ALU_A_OP_BUS] ieo_alu_a_op;
 wire[`ALU_B_OP_BUS] ieo_alu_b_op;
 wire[`IM_OP_BUS] ieo_im_op;
 wire[`WB_ADDR_OP_BUS] ieo_wb_addr_op;
-wire[`RAM_DATA_OP_BUS] ieo_ram_data_op;
 
 wire[`DATA_BUS] ieo_rega;
 wire[`DATA_BUS] ieo_regb;
@@ -550,6 +554,9 @@ wire[`DATA_BUS] mwo_pc;
 wire[`DATA_BUS] mwo_alu_data;
 wire[`DATA_BUS] mwo_ram_data;
 wire[`DATA_BUS] forward_out_ih;
+wire[`DATA_BUS] mux_forward_data;
+wire mux_forward_enable;
+
 Forward forward_ctrl(
     .emo_PC_wb_data(emo_pc),
     .mwo_PC_wb_data(mwo_pc),
@@ -570,12 +577,16 @@ Forward forward_ctrl(
     .mwo_reg_op(mwo_reg_op),
     .emo_wb_data_op(emo_wb_data_op),
     .mwo_wb_data_op(mwo_wb_data_op),
+    
+    .ram_data_op(ieo_ram_data_op),
 
     .reg1_forward_data(reg1_forward_data),
     .reg2_forward_data(reg2_forward_data),
+    .mux_forward_data(mux_forward_data),
 
     .reg1_forward_enable(reg1_forward_enable),
     .reg2_forward_enable(reg2_forward_enable),
+    .mux_forward_enable(mux_forward_enable),
 
     .ieo_ih(ieo_ih),
     .emi_ih(forward_out_ih)
@@ -668,7 +679,10 @@ RAM_Data_Mux ram_data_mux(
     .data_REGA(ieo_rega),
     .data_REGB(ieo_regb),
     .data_RA(ieo_ra),
+    .data_FOWD(mux_forward_data),
+
     .RAM_data_op(ieo_ram_data_op),
+    .forward_enable(mux_forward_enable),
     .RAM_data(ram_data)
     );
 //############# EXE end
@@ -724,15 +738,51 @@ EXE_MEM em(
 //############# end
 
 //############# MEM ###################
+// RAM_SIM2 ram_sim2(
+//     .ram_en(emo_ram_en),
+//     .ram_op(emo_ram_op),
+//     .addr(emo_alu_data),
+//     .w_data(emo_ram_wb_data),
+//     .r_data(ram_out_data)
+    // );
+ 
 wire[`DATA_BUS] ram_out_data;
-RAM_SIM2 ram_sim2(
-    .ram_en(emo_ram_en),
-    .ram_op(emo_ram_op),
-    .addr(emo_alu_data),
-    .w_data(emo_ram_wb_data),
-    .r_data(ram_out_data)
-    );
+wire[`ADDR_BUS] ram_in_addr;
+assign ram_in_addr = {2'b00, emo_alu_data};
 
+
+ram RAM(
+    .rst(rst),
+    .clk_50MHz(clk_50MHz),
+    .sram1_data(ram1_data),
+    .sram1_addr(ram1_addr),
+    .sram1_en(ram1_en),
+    .sram1_oe(ram1_oe),
+    .sram1_we(ram1_we),
+
+    .sram2_data(ram2_data),
+    .sram2_addr(ram2_addr),
+    .sram2_en(ram2_en),
+    .sram2_oe(ram2_oe),
+    .sram2_we(ram2_we),
+    
+    .data_o(ram_out_data),
+    .data_i(emo_ram_wb_data),
+    .addr(ram_in_addr),
+    .op(emo_ram_op),
+    .en(emo_ram_en),
+    .pc(pc_out_pc),
+    .inst(ram1_out_inst),
+    
+    .tsre(tsre),
+    .tbre(tbre),
+    .data_ready(data_ready),
+
+    .wrn(wrn),
+    .rdn(rdn),
+    .ram_pause(ram_pause)
+
+    );
 //############# MEM/WB ################
 wire[`WB_DATA_OP_BUS] mwi_wb_data_op;
 wire[`REG_OP_BUS] mwi_reg_op;
@@ -786,9 +836,13 @@ WB_Data_Mux wb_data_mux(
     );
 
 initial begin
-    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x",
-        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc, emo_ram_wb_data
-        );
+    // $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x",
+    //     $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
+    //                     , ieo_pc
+    //                     , wb_addr
+    //                     , wb_data
+    //                     , mwo_reg_op
+    //     );
 end
 
 endmodule

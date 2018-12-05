@@ -221,4 +221,11 @@
 `define RAM_DATA_OP_REGB 2'b10
 `define RAM_DATA_OP_RA   2'b11
 
+// ram
+`define ENABLE  1'b1
+`define DISABLE 1'b0
+`define PC  1'b0
+`define RAM 1'b1
+
+
 `endif
