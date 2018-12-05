@@ -7,4 +7,5 @@
 !*.xlsx
 !ram.v
 !*test*
+!*.py
 *\~
