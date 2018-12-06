@@ -45,44 +45,47 @@ reg ram1_en;
 reg ram2_op;
 // parameter S_EMPTY = 1'b0,
 //           S_ENDDO = 1'b1;
-assign inst = (rarm2_op == `PC)? sram2_data : `INST_ZERO;
+assign inst = (ram2_op == `PC)? sram2_data : `INST_ZERO;
 assign data_o = (addr<18'h8000) ? sram2_data : sram1_data;
 assign sram2_data = (ram2_op == `RAM && op == `RAM_OP_WR ) ? data_i : 16'bz;
-assign sram1_data = (addr >18'h7FFF && op == `RAM_OP_WR) ? data_i : 16'bz;
-
+assign sram1_data = (addr == 18'hBF01) ? {14'b0, data_ready, (tsre && tbre)}: ((addr >18'h7FFF && op == `RAM_OP_WR) ? data_i : 16'bz);
+// always @(*) begin
+//     if (addr == 18'hBF01) begin
+//         sram1_data <= {14'b0, data_ready, (tsre && tbre)};
+//     end
+//     else if (addr >18'h7FFF && op == `RAM_OP_WR) begin
+//         sram1_data <= data_i;
+//     end else begin
+//         sram1_data <= 18'hz;
+//     end
+// end
 //state machine
 always @(*) begin
-    if (en == `RAM_ENABLE) begin
-        if (addr == 18'hBF01)
-        begin
-            ram1_en = `DISABLE;
-            ram2_op = `PC;
-            com = `ENABLE;
-            ram_pause = `PAUSE_DISABLE;
-        end
-        else
-            if (addr < 18'h8000)
-            begin
-                ram1_en = `DISABLE;
-                ram2_op = `RAM;
-                com = `DISABLE;
-                ram_pause = `PAUSE_ENABLE;
-            end
-            else
-                begin
-                    ram1_en = `ENABLE;
-                    ram2_op = `PC;
-                    com =`DISABLE; 
-                    ram_pause = `PAUSE_DISABLE;
-                end
+    if (en == `RAM_ENABLE && addr == 18'hBF00) begin
+        ram1_en = `DISABLE;
+        ram2_op = `PC;
+        com = `ENABLE;
+        ram_pause = `PAUSE_DISABLE;
     end
-    else 
+    else if (en == `RAM_ENABLE && addr < 18'h8000) begin
+        ram1_en = `DISABLE;
+        ram2_op = `RAM;
+        com = `DISABLE;
+        ram_pause = `PAUSE_ENABLE;
+    end
+    else if(en == `RAM_ENABLE ) begin
+        ram1_en = `ENABLE;
+        ram2_op = `PC;
+        com =`DISABLE; 
+        ram_pause = `PAUSE_DISABLE;
+    end
+    else begin 
         ram1_en = `DISABLE;
         ram2_op = `PC;
         com = `DISABLE;
         ram_pause = `PAUSE_DISABLE;
     end
-
+end
 //sram1_r&w
 always @(*) begin
     if (ram1_en == `ENABLE) begin

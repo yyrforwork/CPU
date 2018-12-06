@@ -12,9 +12,12 @@ with open("b.txt") as f:
         if len(line.strip())>3:
             x = line.strip().replace(' ', '').replace('_', '')
             if(x[0]!='/'):
+                beg,s = first(list(x), lambda i: i=='[')
+                end,s = first(list(x), lambda i: i==']')
+                k = x[beg+1:end]
                 beg,s = first(list(x), lambda i: i=='\'')
                 end,s = first(list(x), lambda i: i==';')
                 l = x[beg+2:end]
-                print(("%04x"%(int(l, 2))).upper())
+                print(("%06x=%04x"%(int(k),int(l, 2))).upper())
         else:
             print(" ")
