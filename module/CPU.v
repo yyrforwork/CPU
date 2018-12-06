@@ -32,6 +32,7 @@
 `include "WB_Data_Mux.v"
 `include "RAM_SIM1.v"
 `include "RAM_SIM2.v"
+`include "vga.v"
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // CPU
@@ -62,9 +63,12 @@ module CPU(
     input  tbre,
     input  data_ready,
     output rdn,
-    output wrn
+    output wrn,
 
     // Other
+    output [8:0] vga_rgb,
+    output       vga_row_ctrl,
+    output       vga_col_ctrl
    );
 
 // assign rdn = 1'b0;
@@ -97,7 +101,7 @@ end
 // // ram1 combination
 // sram ram1(
 //         .rst(rst),
-//         .clk_50MHz(clk_50MHz),
+//         .clk_50MHz(clk_25MHz),
 
 //         .sram_data(ram1_data),
 //         .sram_addr(ram1_addr),
@@ -128,7 +132,7 @@ end
 // // ram2 combination
 // sram ram2(
 //         .rst(rst),
-//         .clk_50MHz(clk_50MHz),
+//         .clk_50MHz(clk_25MHz),
 
 //         .sram_data(ram2_data),
 //         .sram_addr(ram2_addr),
@@ -162,7 +166,7 @@ assign pc_pause = p_c_out_pc_pause;
 assign pc_in_pc = pc_new;
 PC pc(
     .rst(rst),
-    .clk_50Mhz(clk_50MHz),
+    .clk_50Mhz(clk_25MHz),
     .PC_pause(pc_pause),
     .PC_in(pc_in_pc),
     .PC_out(pc_out_pc)
@@ -220,7 +224,7 @@ assign iii_pca = pc_a_out_pc;
 
 IF_ID if_id(
     .rst(rst),
-    .clk_50MHz(clk_50MHz),
+    .clk_50MHz(clk_25MHz),
     .ii_PC_pause(iii_pause),
     .ii_PC_clear(iii_clear),
     .ram_out_inst(iii_inst),
@@ -251,7 +255,7 @@ assign mci_inst = iio_inst;
 
 Control main_control(
     .rst(rst),
-    .clk_50MHz(clk_50MHz),
+    .clk_50MHz(clk_25MHz),
     .inst(mci_inst),
 
     .ALU_op(mco_alu_op),
@@ -296,7 +300,7 @@ assign reg_files_in_reg_op = mwo_reg_op;
 
 REG_File regs(
     .rst(rst),
-    .clk_50MHz(clk_50MHz),
+    .clk_50MHz(clk_25MHz),
     .A_addr(reg_files_in_a_addr),
     .B_addr(reg_files_in_b_addr),
     .wb_addr(reg_files_in_wb_addr),
@@ -462,7 +466,7 @@ assign iei_s_e_3_0 = ex_out_s_e_3_0;
 assign iei_z_e_7_0 = ex_out_z_e_7_0;
 ID_EXE ie(
     .rst(rst),
-    .clk_50MHz(clk_50MHz),
+    .clk_50MHz(clk_25MHz),
     .ie_PAUSE(iei_pause),
     .jump_control_ie_PAUSE(jump_control_ie_pause),
 
@@ -714,7 +718,7 @@ assign emi_wb_addr = wb_addr;
 
 EXE_MEM em(
     .rst(rst),
-    .clk_50MHz(clk_50MHz),
+    .clk_50MHz(clk_25MHz),
     .n_em_RAM_en(emi_ram_en),
     .n_em_RAM_op(emi_ram_op),
     .n_em_WB_DATA_op(emi_wb_data_op),
@@ -749,11 +753,15 @@ EXE_MEM em(
 wire[`DATA_BUS] ram_out_data;
 wire[`ADDR_BUS] ram_in_addr;
 assign ram_in_addr = {2'b00, emo_alu_data};
-
+wire[9:0] vga_row;
+wire[9:0] vga_col;
+wire[8:0] vga_data;
 
 ram RAM(
     .rst(rst),
     .clk_50MHz(clk_50MHz),
+    .clk_25MHz(clk_25MHz),
+
     .sram1_data(ram1_data),
     .sram1_addr(ram1_addr),
     .sram1_en(ram1_en),
@@ -778,11 +786,29 @@ ram RAM(
     .tbre(tbre),
     .data_ready(data_ready),
 
+    .vga_col(vga_col),
+    .vga_row(vga_row),
+    .vga_data(vga_data),
+
     .wrn(wrn),
     .rdn(rdn),
     .ram_pause(ram_pause)
 
     );
+
+VGA vga(
+    .rst(rst),
+    .clk_25MHz(clk_25MHz),
+    .vga_row(vga_row),
+    .vga_col(vga_col),
+    .vga_data(vga_data),
+
+    .vga_rgb(vga_rgb),
+    .vga_row_ctrl(vga_row_ctrl),
+    .vga_col_ctrl(vga_col_ctrl)
+    );
+
+
 //############# MEM/WB ################
 wire[`WB_DATA_OP_BUS] mwi_wb_data_op;
 wire[`REG_OP_BUS] mwi_reg_op;
@@ -802,7 +828,7 @@ assign mwi_wb_addr = emo_wb_addr;
 
 MEM_WB mwm_wb(
     .rst(rst),
-    .clk_50MHz(clk_50MHz),
+    .clk_50MHz(clk_25MHz),
     
     .n_mw_WB_data_op(mwi_wb_data_op),
     .n_mw_REG_op(mwi_reg_op),
