@@ -5,7 +5,7 @@
 `define _RAM_
 `include "define.v"
 
-module ram(
+module RAM(
         input                  rst,      // reset signal
         input                  clk_50MHz,// system clock 50 MHz
 

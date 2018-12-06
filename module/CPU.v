@@ -26,13 +26,12 @@
 `include "PC.v"
 `include "RAM_Data_Mux.v"
 `include "REG_File.v"
-// `include "sram.v"
 `include "ram.v"
+`include "ram_sim.v"
 `include "WB_Addr_Mux.v"
 `include "WB_Data_Mux.v"
-`include "RAM_SIM1.v"
-`include "RAM_SIM2.v"
 
+`define SIM 1'b1
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // CPU
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -196,12 +195,8 @@ PC_Jump_Mux pc_jump_mux(
     .PC_new(pc_new)
     );
 
-//
 wire[`INST_BUS] ram1_out_inst;
-// RAM_SIM1 ram_sim1(
-//     .pc(pc_out_pc),
-//     .inst(ram1_out_inst)
-//     );
+
 //############# IF end
 
 //############# IF/ID #################
@@ -738,51 +733,76 @@ EXE_MEM em(
 //############# end
 
 //############# MEM ###################
-// RAM_SIM2 ram_sim2(
-//     .ram_en(emo_ram_en),
-//     .ram_op(emo_ram_op),
-//     .addr(emo_alu_data),
-//     .w_data(emo_ram_wb_data),
-//     .r_data(ram_out_data)
-    // );
- 
 wire[`DATA_BUS] ram_out_data;
 wire[`ADDR_BUS] ram_in_addr;
 assign ram_in_addr = {2'b00, emo_alu_data};
 
+// if(`SIM) begin
+    RAM_SIM ram(
+        .rst(rst),
+        .clk_50MHz(clk_50MHz),
+        .sram1_data(ram1_data),
+        .sram1_addr(ram1_addr),
+        .sram1_en(ram1_en),
+        .sram1_oe(ram1_oe),
+        .sram1_we(ram1_we),
 
-ram RAM(
-    .rst(rst),
-    .clk_50MHz(clk_50MHz),
-    .sram1_data(ram1_data),
-    .sram1_addr(ram1_addr),
-    .sram1_en(ram1_en),
-    .sram1_oe(ram1_oe),
-    .sram1_we(ram1_we),
+        .sram2_data(ram2_data),
+        .sram2_addr(ram2_addr),
+        .sram2_en(ram2_en),
+        .sram2_oe(ram2_oe),
+        .sram2_we(ram2_we),
+        
+        .data_o(ram_out_data),
+        .data_i(emo_ram_wb_data),
+        .addr(ram_in_addr),
+        .op(emo_ram_op),
+        .en(emo_ram_en),
+        .pc(pc_out_pc),
+        .inst(ram1_out_inst),
+        
+        .tsre(tsre),
+        .tbre(tbre),
+        .data_ready(data_ready),
 
-    .sram2_data(ram2_data),
-    .sram2_addr(ram2_addr),
-    .sram2_en(ram2_en),
-    .sram2_oe(ram2_oe),
-    .sram2_we(ram2_we),
-    
-    .data_o(ram_out_data),
-    .data_i(emo_ram_wb_data),
-    .addr(ram_in_addr),
-    .op(emo_ram_op),
-    .en(emo_ram_en),
-    .pc(pc_out_pc),
-    .inst(ram1_out_inst),
-    
-    .tsre(tsre),
-    .tbre(tbre),
-    .data_ready(data_ready),
-
-    .wrn(wrn),
-    .rdn(rdn),
-    .ram_pause(ram_pause)
-
+        .wrn(wrn),
+        .rdn(rdn),
+        .ram_pause(ram_pause)
     );
+// end else begin
+//     RAM ram(
+//         .rst(rst),
+//         .clk_50MHz(clk_50MHz),
+//         .sram1_data(ram1_data),
+//         .sram1_addr(ram1_addr),
+//         .sram1_en(ram1_en),
+//         .sram1_oe(ram1_oe),
+//         .sram1_we(ram1_we),
+
+//         .sram2_data(ram2_data),
+//         .sram2_addr(ram2_addr),
+//         .sram2_en(ram2_en),
+//         .sram2_oe(ram2_oe),
+//         .sram2_we(ram2_we),
+        
+//         .data_o(ram_out_data),
+//         .data_i(emo_ram_wb_data),
+//         .addr(ram_in_addr),
+//         .op(emo_ram_op),
+//         .en(emo_ram_en),
+//         .pc(pc_out_pc),
+//         .inst(ram1_out_inst),
+        
+//         .tsre(tsre),
+//         .tbre(tbre),
+//         .data_ready(data_ready),
+
+//         .wrn(wrn),
+//         .rdn(rdn),
+//         .ram_pause(ram_pause)
+//     );
+// end
+
 //############# MEM/WB ################
 wire[`WB_DATA_OP_BUS] mwi_wb_data_op;
 wire[`REG_OP_BUS] mwi_reg_op;
@@ -836,13 +856,14 @@ WB_Data_Mux wb_data_mux(
     );
 
 initial begin
-    // $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x",
-    //     $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
-    //                     , ieo_pc
-    //                     , wb_addr
-    //                     , wb_data
-    //                     , mwo_reg_op
-    //     );
+    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x %x",
+        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
+                        , wb_data
+                        , mwo_ram_data
+                        , emo_alu_data
+                        , ram_out_data
+                        , ram.sram2_data
+        );
 end
 
 endmodule
