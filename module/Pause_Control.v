@@ -22,16 +22,16 @@ module Pause_Control(
     );
 
 always @(*) begin
-    if(reg_op==`REG_OP_REG && wb_data_op==`WB_DATA_OP_MEM)/*
+    if(reg_op==`REG_OP_REG && wb_data_op==`WB_DATA_OP_MEM
                            &&  ( (wb_addr==REGA_addr && (ALU_A_op==`ALU_A_OP_REGA ||ram_data_op == `RAM_DATA_OP_REGA))
-                               ||(wb_addr==REGB_addr && (ALU_B_op==`ALU_B_OP_REGB ||ram_data_op == `RAM_DATA_OP_REGB)) ) )*/ begin
+                               ||(wb_addr==REGB_addr && (ALU_B_op==`ALU_B_OP_REGB ||ram_data_op == `RAM_DATA_OP_REGB)) ) ) begin
         PC_pause <= `PAUSE_ENABLE;
         ii_pause <= `PAUSE_ENABLE;
         ie_pause <= `PAUSE_ENABLE;
     end else begin
-        PC_pause <= `PAUSE_DISABLE | ram_pause;
-        ii_pause <= `PAUSE_DISABLE | ram_pause;
-        ie_pause <= `PAUSE_DISABLE;
+        PC_pause <=  ram_pause;
+        ii_pause <=  ram_pause;
+        ie_pause <=  ram_pause;
     end
 end
 

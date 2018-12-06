@@ -45,7 +45,7 @@ reg ram1_en;
 reg ram2_op;
 // parameter S_EMPTY = 1'b0,
 //           S_ENDDO = 1'b1;
-assign inst = sram2_data;
+assign inst = (rarm2_op == `PC)? sram2_data : `INST_ZERO;
 assign data_o = (addr<18'h8000) ? sram2_data : sram1_data;
 assign sram2_data = (ram2_op == `RAM && op == `RAM_OP_WR ) ? data_i : 16'bz;
 assign sram1_data = (addr >18'h7FFF && op == `RAM_OP_WR) ? data_i : 16'bz;
