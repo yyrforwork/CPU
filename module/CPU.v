@@ -847,23 +847,24 @@ MEM_WB mwm_wb(
 
 //wb data mux
 WB_Data_Mux wb_data_mux(
-    .alu_data(mwo_alu_data),
-    .mem_data(mwo_ram_data),
-    .wb_PC(mwo_pc),
-    .wb_IH(mwo_ih),
-    .wb_data_op(mwo_wb_data_op),
-    .wb_data(wb_data)
+        .alu_data(mwo_alu_data),
+        .mem_data(mwo_ram_data),
+        .wb_PC(mwo_pc),
+        .wb_IH(mwo_ih),
+        .wb_data_op(mwo_wb_data_op),
+        .wb_data(wb_data)
     );
 
 initial begin
-    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x %x",
-        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
-                        , wb_data
-                        , mwo_ram_data
-                        , emo_alu_data
-                        , ram_out_data
-                        , ram.sram2_data
-        );
+    // $monitor("%dns, i=%x, pc=%x, watch=%x %x %x %x %x %x",
+    //     $stime, ram1_out_inst, pc_out_pc
+    //                     , ram.data[18'h08000]
+    //                     , ram.data[18'h08001]
+    //                     , ram.data[18'h08002]
+    //                     , ram.data[18'h08003]
+    //                     , ram.data[18'h08004]
+    //                     , ram.data[18'h08005]
+    //     );
 end
 
 endmodule

@@ -47,68 +47,55 @@ reg ram2_op;
 //           S_ENDDO = 1'b1;
 assign inst = sram2_data;
 assign data_o = (addr<18'h8000) ? sram2_data : sram1_data;
-assign sram2_data = (ram2_op == `RAM && op == `RAM_OP_WR ) ? data_i : 16'bz;
+assign sram2_data = (ram2_op == `RAM && op == `RAM_OP_WR) ? data_i : 16'bz;
 assign sram1_data = (addr >18'h7FFF && op == `RAM_OP_WR) ? data_i : 16'bz;
 
 //state machine
 always @(*) begin
-    if (en == `RAM_ENABLE) begin
-        if (addr == 18'hBF01)
-        begin
-            ram1_en = `DISABLE;
-            ram2_op = `PC;
-            com = `ENABLE;
-            ram_pause = `PAUSE_DISABLE;
-        end
-        else
-            if (addr < 18'h8000)
-            begin
-                ram1_en = `DISABLE;
-                ram2_op = `RAM;
-                com = `DISABLE;
-                ram_pause = `PAUSE_ENABLE;
-            end
-            else
-                begin
-                    ram1_en = `ENABLE;
-                    ram2_op = `PC;
-                    com =`DISABLE; 
-                    ram_pause = `PAUSE_DISABLE;
-                end
+    if (en == `RAM_ENABLE && addr == 18'hBF01) begin
+        ram1_en = `DISABLE;
+        ram2_op = `PC;
+        com = `ENABLE;
+        ram_pause = `PAUSE_DISABLE;
     end
-    else 
+    else if (en == `RAM_ENABLE && addr < 18'h8000) begin
+        ram1_en = `DISABLE;
+        ram2_op = `RAM;
+        com = `DISABLE;
+        ram_pause = `PAUSE_ENABLE;
+    end
+    else if (en == `RAM_ENABLE) begin
+        ram1_en = `ENABLE;
+        ram2_op = `PC;
+        com =`DISABLE; 
+        ram_pause = `PAUSE_DISABLE;
+    end
+    else begin
         ram1_en = `DISABLE;
         ram2_op = `PC;
         com = `DISABLE;
         ram_pause = `PAUSE_DISABLE;
     end
+end
 
 //sram1_r&w
 always @(*) begin
-    if (ram1_en == `ENABLE) begin
-        if (op == `RAM_OP_RD)
-        begin
-            sram1_en = 1'b0;
-            sram1_oe = 1'b0;
-            sram1_we = 1'b1;
-            sram1_addr = addr;
-        end
-        else//write
-        begin
-            sram1_en = 1'b0;
-            sram1_oe = 1'b1;
-            sram1_addr = addr;
-            if (clk_50MHz == 1'b0)
-            begin
-                sram1_we = 1'b1;
-            end
-            else begin
-                sram1_we = 1'b0;
-            end
-        end
+    if (ram1_en == `ENABLE && op == `RAM_OP_RD) begin
+        sram1_en = 1'b0;
+        sram1_oe = 1'b0;
+        sram1_we = 1'b1;
+        sram1_addr = addr;
     end
-    else 
-    begin
+    else if(ram1_en == `ENABLE) begin //write
+        sram1_en = 1'b0;
+        sram1_oe = 1'b1;
+        sram1_addr = addr;
+        if (clk_50MHz == 1'b1)
+            sram1_we = 1'b0;
+        else
+            sram1_we = 1'b1;
+    end
+    else begin
         sram1_en = 1'b1;
         sram1_oe = 1'b1;
         sram1_we = 1'b1;
@@ -117,62 +104,42 @@ end
 
 //sram2 r&w
 always @(*) begin
-    if (ram2_op == `PC) 
-    begin
+    if (ram2_op == `PC)  begin
         sram2_en = 1'b0;
         sram2_oe = 1'b0;
         sram2_we = 1'b1;
         sram2_addr = {2'b00, pc};
     end
-    else if (ram2_op == `RAM) 
-    begin
-        if (op == `RAM_OP_RD)
-        begin
-            sram2_en = 1'b0;
-            sram2_oe = 1'b0;
-            sram2_we = 1'b1;
-            sram2_addr = addr;
-        end
+    else if (ram2_op == `RAM && op == `RAM_OP_RD) begin
+        sram2_en = 1'b0;
+        sram2_oe = 1'b0;
+        sram2_we = 1'b1;
+        sram2_addr = addr;
+    end
+    else if (ram2_op ==`RAM) begin //if (op == `RAM_OP_WR)
+        sram2_en = 1'b0;
+        sram2_oe = 1'b1;
+        sram2_addr = addr;
+        if (clk_50MHz == 1'b1)
+            sram2_we = 1'b0;
         else
-        //if (op == `RAM_OP_WR)
-        begin
-            sram2_en = 1'b0;
-            sram2_oe = 1'b1;
-            sram2_addr = addr;
-            if (clk_50MHz == 1'b0)
-            begin
-                sram2_we = 1'b1;
-            end
-            else begin
-                sram2_we = 1'b0;
-            end
-        end
+            sram2_we = 1'b1;
     end
 end
 
 //com r&w
 always @(*) begin
-    if (com == `ENABLE) 
-    begin
-        if (sram1_en ==1'b1 && sram1_we == 1'b1 && sram1_oe == 1'b1 ) begin
-            if (op == `RAM_OP_RD)
-            begin
-                if (data_ready == 1'b1)
-                    rdn = 1'b0;
-                wrn = 1'b1;
-            end
+    if (com == `ENABLE) begin
+        if (op == `RAM_OP_RD) begin
+            wrn = 1'b1;
+            rdn = ~data_ready;
+        end
+        else begin //if (op == `RAM_OP_WR)
+            rdn = 1'b1;
+            if (clk_50MHz == 1'b1)
+                wrn = 1'b0;
             else
-            //if (op == `RAM_OP_WR)
-            begin
-                rdn = 1'b1;
-                if (clk_50MHz == 1'b0)
-                begin
-                    wrn = 1'b0;
-                end
-                else begin
-                    wrn = 1'b1;
-                end
-            end
+                wrn = 1'b1;
         end
     end
     else begin
