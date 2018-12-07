@@ -714,7 +714,7 @@ ram RAM(
     .ram_pause(ram_pause)
     );
 
-VGA vga(
+vga VGA(
     .rst(rst),
     .clk_25MHz(clk_25MHz),
     .vga_row(vga_row),

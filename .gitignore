@@ -9,4 +9,5 @@
 !*test*
 !*.py
 !*.v
+!CPU.ucf
 *\~

@@ -75,7 +75,7 @@ always @(*) begin
         com =`DISABLE; 
         ram_pause = `PAUSE_DISABLE;
     end
-    else 
+    else begin
         ram1_en = `DISABLE;
         ram2_op = `PC;
         com = `DISABLE;
@@ -164,9 +164,9 @@ reg vga_enable;
 reg [`VGA_ROW_BUS] vga_reg_row;
 reg [`VGA_COL_BUS] vga_reg_col;
 reg [`VGA_POS_BUS] vga_reg_pos;
-reg [`DATA_BUS] vga_reg_data;
+reg [31:0] vga_reg_data;
 
-always @(*) begin:
+always @(*) begin
     if (op == `RAM_OP_WR && sram1_we==1'b0 && addr >= `VGA_ADDR_BEG && addr <= `VGA_ADDR_END) begin
         vga_data_reg[addr-`VGA_ADDR_BEG] = data_i;
     end
@@ -182,9 +182,11 @@ always @(posedge clk_50MHz or negedge rst) begin
         if (vga_enable == `ENABLE) begin
             vga_reg_row = vga_row*`VGA_REG_ROW/`VGA_ROW;
             vga_reg_col = vga_col*`VGA_REG_COL/`VGA_COL;
-            vga_reg_pos = vga_reg_col*`VGA_REG_ROW+vga_reg_row;
-            vga_reg_data = vga_data_reg[vga_reg_pos>>4];
-            vga_data = vga_reg_data[]
+            vga_reg_pos = 3*(vga_reg_col*`VGA_REG_ROW+vga_reg_row);
+            vga_reg_data = {vga_data_reg[vga_reg_pos>>4],vga_data_reg[(vga_reg_pos>>4)+1]};
+            vga_data[`VGA_R_BUS] = {3{vga_reg_data[vga_reg_pos[3:0]]}};
+            vga_data[`VGA_G_BUS] = {3{vga_reg_data[vga_reg_pos[3:0]+1]}};
+            vga_data[`VGA_B_BUS] = {3{vga_reg_data[vga_reg_pos[3:0]+2]}};
         end
         else begin
             vga_data =9'b0;
