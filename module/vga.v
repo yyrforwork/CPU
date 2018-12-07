@@ -17,15 +17,22 @@ module vga(
         output reg                  vga_col_ctrl
     );
 
-    if(vga_row >= 656 && vga_row <= 764) begin
-        
-    end
-    if(vga_col >= 492 && vga_col <= 512) begin
+always @(posedge clk_25MHz) begin
+    if (vga_row < 655 || vga_row > 750)
+        vga_row_ctrl = 1'b1;
+    else
+        vga_row_ctrl = 1'b0;
+    
+    if (vga_col < 489 || vga_col > 490)
+        vga_col_ctrl = 1'b1;
+    else
+        vga_col_ctrl = 1'b0;
 
-    end
-    if ((vga_row < 640) && (vga_col < 480)) begin
+    if (vga_row < 640 && vga_col < 480)
         vga_rgb = vga_data;
-    end
+    else 
+        vga_rgb = 9'b0;
+end
 
 endmodule // vga
 

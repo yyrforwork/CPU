@@ -1,4 +1,14 @@
 #!/usr/bin/python2
+
+# binary to hex
+# eg:
+# input: b.txt
+#       insts[1] = 16'b01101_001_110_00000; // LI R1 C0
+#       insts[2] = 16'b01101_010_000_00001; // LI R2 1
+# output: console
+#           69C0
+#           6A01
+
 import string, sys
 
 def first(the_iterable, condition = lambda x: True):

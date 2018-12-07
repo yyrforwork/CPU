@@ -290,7 +290,7 @@ Pause_Control p_c(
     .REGB_addr(p_c_in_reg2_addr),
     .ALU_A_op(p_c_in_alu_a_op),
     .ALU_B_op(p_c_in_alu_b_op),
-    .ram_data_op(ieo_ram_data_op),
+    .ram_data_op(mco_ram_data_op),
 
     .ram_pause(ram_pause),
     .PC_pause(p_c_out_pc_pause),
@@ -680,6 +680,7 @@ wire[`VGA_DATA_BUS] vga_data;
 ram RAM(
     .rst(rst),
     .clk_50MHz(clk_50MHz),
+    .clk_25MHz(clk_25MHz),
 
     .sram1_data(ram1_data),
     .sram1_addr(ram1_addr),

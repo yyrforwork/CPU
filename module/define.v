@@ -229,23 +229,21 @@
 
 // VGA
 `define VGA_ADDR_BEG 18'hC000
-`define VGA_ADDR_END 18'hC090
+`define VGA_ADDR_END 18'hC0E1
 
 `define VGA_ROW 10'b10_1000_0000 /* 640 */
 `define VGA_COL 10'b01_1110_0000 /* 480 */
 `define VGA_ROW_BUS 9:0
 `define VGA_COL_BUS 9:0
 `define VGA_DATA_BUS 8:0
-`define VGA_R_BUS 8:6
+`define VGA_R_BUS 2:0
 `define VGA_G_BUS 5:3
-`define VGA_B_BUS 2:0
+`define VGA_B_BUS 8:6
 
-`define VGA_REG_ROW 6'h20  /* 32 */
-`define VGA_REG_COL 6'h18  /* 24 */
-`define VGA_REG_ROW_BUS 5:0
-`define VGA_REG_COL_BUS 5:0
-`define VGA_REG_NUM 8'h90  /* 144 */
+`define VGA_REG_ROW 6'h28  /* 40 */
+`define VGA_REG_COL 6'h1E  /* 30 */
+`define VGA_REG_NUM 8'hE1  /* 225 */
 
-`define VGA_POS_BUS 11:0
+`define VGA_POS_BUS 12:0
 
 `endif

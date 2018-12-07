@@ -8,6 +8,7 @@
 module ram(
         input                  rst,      // reset signal
         input                  clk_50MHz,// system clock 50 MHz
+        input                  clk_25MHz,// system clock 25 MHz
 
         inout      [`DATA_BUS] sram1_data,// sram data
         output reg [`ADDR_BUS] sram1_addr,// sram address
@@ -161,18 +162,28 @@ always @(*) begin
 end
 
 reg vga_enable;
-reg [`VGA_ROW_BUS] vga_reg_row;
-reg [`VGA_COL_BUS] vga_reg_col;
+reg [`VGA_POS_BUS] vga_reg_row;
+reg [`VGA_POS_BUS] vga_reg_col;
 reg [`VGA_POS_BUS] vga_reg_pos;
 reg [31:0] vga_reg_data;
+reg [3:0]  vga_reg_addr;
 
-always @(*) begin
-    if (op == `RAM_OP_WR && sram1_we==1'b0 && addr >= `VGA_ADDR_BEG && addr <= `VGA_ADDR_END) begin
+always @(negedge clk_50MHz or negedge rst) begin
+    if(~rst) begin
+        vga_data_reg[0] = 16'hFFFF;
+        vga_data_reg[1] = 16'hFFFF;
+        vga_data_reg[2] = 16'hFFFF;
+        vga_data_reg[3] = 16'hFFFF;
+        vga_data_reg[4] = 16'hFFFF;
+        vga_data_reg[5] = 16'hFFFF;
+        vga_data_reg[6] = 16'hFF00;
+    end
+    if (op == `RAM_OP_WR && addr >= `VGA_ADDR_BEG && addr <= `VGA_ADDR_END) begin
         vga_data_reg[addr-`VGA_ADDR_BEG] = data_i;
     end
 end
 
-always @(posedge clk_50MHz or negedge rst) begin
+always @(posedge clk_25MHz or negedge rst) begin
     if (~rst) begin
         vga_row = 0;
         vga_col = 0;
@@ -180,16 +191,18 @@ always @(posedge clk_50MHz or negedge rst) begin
         vga_enable = `ENABLE;
     end else begin
         if (vga_enable == `ENABLE) begin
-            vga_reg_row = vga_row*`VGA_REG_ROW/`VGA_ROW;
-            vga_reg_col = vga_col*`VGA_REG_COL/`VGA_COL;
+            vga_reg_row = vga_row>>4; // 640/16 -> 40
+            vga_reg_col = vga_col>>4; // 480/16 -> 30
             vga_reg_pos = 3*(vga_reg_col*`VGA_REG_ROW+vga_reg_row);
+            vga_reg_addr = vga_reg_pos[3:0];
+
             vga_reg_data = {vga_data_reg[vga_reg_pos>>4],vga_data_reg[(vga_reg_pos>>4)+1]};
-            vga_data[`VGA_R_BUS] = {3{vga_reg_data[vga_reg_pos[3:0]]}};
-            vga_data[`VGA_G_BUS] = {3{vga_reg_data[vga_reg_pos[3:0]+1]}};
-            vga_data[`VGA_B_BUS] = {3{vga_reg_data[vga_reg_pos[3:0]+2]}};
+            vga_data[`VGA_R_BUS] = vga_reg_data[31-vga_reg_addr];
+            vga_data[`VGA_G_BUS] = vga_reg_data[30-vga_reg_addr];
+            vga_data[`VGA_B_BUS] = vga_reg_data[29-vga_reg_addr];
         end
         else begin
-            vga_data =9'b0;
+            vga_data = 9'b0;
         end
         
         // update row and col
