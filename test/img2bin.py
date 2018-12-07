@@ -1,4 +1,16 @@
+#!/usr/bin/python3
 import cv2, time
+
+# image to instrctions and ram data
+# eg:
+# input:
+#    i0.png         // 40x30 image
+# output:
+#    i0.png         // 40x30 image, 1 bit per channel
+#    i0.png.txt     // instrctions to load this png to VGA
+#    i0.png.data    // data for ram1 to save this image
+
+name = "i2.png"
 
 t0 = time.time()
 def progress(percent,msg='',show_time=0,width=50):
@@ -11,7 +23,6 @@ def progress(percent,msg='',show_time=0,width=50):
     show_str = msg+time_str+show_str if show_time else msg+show_str
     print('\r%s %d%%' %(show_str,percent*100),end='')
 
-name = "i2.png"
 image = cv2.imread(name)
 fbin = open(name+".data", "w")
 fdat = open(name+".txt", "w")
@@ -31,7 +42,6 @@ for i in range(size[0]):
         data += ndata
         if(len(data)>=16):
             fbin.writelines(("%06x=%04x\r\n"%(line, int(data[0:16],2))).upper())
-            
             fdat.writelines(("LI R1 %02x\r\n"%int(data[0:8],2)).upper())
             if(int(data[8])==1):
                 fdat.writelines(("SLL R1 R1 4\r\n").upper())
