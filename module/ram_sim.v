@@ -6,15 +6,16 @@
 `include "define.v"
 
 module RAM_SIM(
-        input                  rst,      // reset signal
-        input                  clk_50MHz,// system clock 50 MHz
+        input                  rst,       // reset signal
+        input                  clk_50MHz, // system clock 50 MHz
+        input                  clk_25MHz, // system clock 25 MHz
 
         inout      [`DATA_BUS] sram1_data,// sram data
         output reg [`ADDR_BUS] sram1_addr,// sram address
         output reg             sram1_en,  // sram chip enable [CE]
         output reg             sram1_oe,  // sram output enable [OE]
         output reg             sram1_we,  // sram write enable [WE]
-       
+
         inout      [`DATA_BUS] sram2_data,// sram data
         output reg [`ADDR_BUS] sram2_addr,// sram address
         output reg             sram2_en,  // sram chip enable [CE]
@@ -28,11 +29,15 @@ module RAM_SIM(
         input                  en,       // enable
 
         input      [`PC_BUS]   pc,
-        output reg [`INST_BUS] inst,
+        output     [`INST_BUS] inst,
 
         input                  tsre,
         input                  tbre,
         input                  data_ready,
+
+        output reg [`VGA_ROW_BUS]  vga_row,
+        output reg [`VGA_COL_BUS]  vga_col,
+        output reg [`VGA_DATA_BUS] vga_data,
 
         output reg             rdn,
         output reg             wrn,
@@ -73,11 +78,7 @@ initial begin
     insts[18]= 16'b00001_000_000_00000; // NOP
 end
 
-always @(*) begin
-    inst <= sram2_data;
-end
-
-// assign inst = sram2_data;
+assign inst = sram2_data;
 assign data_o = (addr<18'h08000) ? sram2_data : sram1_data;
 assign sram2_data = ram2_op==`PC ? insts[pc] : insts[addr];
 assign sram1_data = data[addr];

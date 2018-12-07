@@ -27,47 +27,48 @@
 `include "RAM_Data_Mux.v"
 `include "REG_File.v"
 `include "ram.v"
+`include "ram_sim.v"
 `include "WB_Addr_Mux.v"
 `include "WB_Data_Mux.v"
-`include "RAM_SIM1.v"
-`include "RAM_SIM2.v"
 `include "vga.v"
+
+`define SIMULATION 0
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // CPU
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 module CPU(
-    input rst,
-    input clk,
-    input clk_50MHz,
-    input clk_11MHz,
+        input rst,
+        input clk,
+        input clk_50MHz,
+        input clk_11MHz,
 
-    // RAM1
-    inout  [`DATA_BUS] ram1_data,
-    output [`ADDR_BUS] ram1_addr,
-    output ram1_en,
-    output ram1_oe,
-    output ram1_we,
+        // RAM1
+        inout  [`DATA_BUS] ram1_data,
+        output [`ADDR_BUS] ram1_addr,
+        output ram1_en,
+        output ram1_oe,
+        output ram1_we,
 
-    // RAM2
-    inout  [`DATA_BUS] ram2_data,
-    output [`ADDR_BUS] ram2_addr,
-    output ram2_en,
-    output ram2_oe,
-    output ram2_we,
+        // RAM2
+        inout  [`DATA_BUS] ram2_data,
+        output [`ADDR_BUS] ram2_addr,
+        output ram2_en,
+        output ram2_oe,
+        output ram2_we,
 
-    // UART
-    input  tsre,
-    input  tbre,
-    input  data_ready,
-    output rdn,
-    output wrn,
+        // UART
+        input  tsre,
+        input  tbre,
+        input  data_ready,
+        output rdn,
+        output wrn,
 
-    // Other
-    output [8:0] vga_rgb,
-    output       vga_row_ctrl,
-    output       vga_col_ctrl
+        // Other
+        output [8:0] vga_rgb,
+        output       vga_row_ctrl,
+        output       vga_col_ctrl
    );
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -88,7 +89,10 @@ wire p_c_out_ii_pause;
 wire p_c_out_ie_pause;
 wire[`PC_BUS] pc_new;
 
-//############# IF ####################
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// IF
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
 //PC module
 wire pc_pause;
 wire[`PC_BUS] pc_in_pc;
@@ -102,7 +106,7 @@ PC pc(
     .PC_pause(pc_pause),
     .PC_in(pc_in_pc),
     .PC_out(pc_out_pc)
-    );
+);
 
 //PC_Adder
 wire[`PC_BUS] pc_a_in_pc;
@@ -112,7 +116,7 @@ assign pc_a_in_pc = pc_out_pc ;
 PC_Adder pc_a(
     .old_PC(pc_a_in_pc),
     .new_PC(pc_a_out_pc)
-    ); 
+); 
 
 //jump control
 wire jump_en;
@@ -121,7 +125,7 @@ Jump_Control jump_ctl(
     .pc_jump_en(jump_en),
     .clear(ii_clear),
     .pause(jump_control_ie_pause)
-    );
+);
 
 //pc jump mux
 wire[`PC_BUS] jump_addr;
@@ -130,12 +134,13 @@ PC_Jump_Mux pc_jump_mux(
     .PC_jump(jump_addr),
     .PC_add(pc_a_out_pc),
     .PC_new(pc_new)
-    );
+);
 
 wire[`INST_BUS] ram1_out_inst;
-//############# IF end
 
-//############# IF/ID #################
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// IF / ID
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 wire iii_pause;
 wire iii_clear;
@@ -158,10 +163,11 @@ IF_ID if_id(
     .pc_add_value(iii_pca),
     .ii_inst(iio_inst),
     .ii_PC(iio_pca)
-    );
-//############# IF_ID_end
+);
 
-//############# ID ####################
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// ID
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 //main_control
 wire[`INST_BUS] mci_inst;
@@ -199,7 +205,7 @@ Control main_control(
     .jump_data_op(mco_jump_data_op),
     .im_op(mco_im_op),
     .ram_data_op(mco_ram_data_op)
-    );
+);
 
 //reg_files
 wire[`REG_ADDR_BUS] reg_files_in_a_addr;
@@ -239,7 +245,7 @@ REG_File regs(
     .SP_data(reg_files_out_sp_data),
     .IH_data(reg_files_out_ih_data),
     .RA_data(reg_files_out_ra_data)
-    );
+);
 
 //entender
 wire[`INST_BUS] ex_in_inst;
@@ -258,7 +264,7 @@ Extender ex(
     .s_e_7_0(ex_out_s_e_7_0),
     .s_e_4_0(ex_out_s_e_4_0),
     .s_e_3_0(ex_out_s_e_3_0)
-    );
+);
 
 //pause control
 wire[`REG_OP_BUS] p_c_in_reg_op;
@@ -296,10 +302,12 @@ Pause_Control p_c(
     .PC_pause(p_c_out_pc_pause),
     .ii_pause(p_c_out_ii_pause),
     .ie_pause(p_c_out_ie_pause)
-    );
-//############# ID end
+);
 
-//############# ID/EXE ################
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// ID / EXE
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
 wire iei_pause;
 wire[`INST_BUS] iei_inst;
 wire[`WB_DATA_OP_BUS] iei_wb_data_op;
@@ -330,7 +338,6 @@ wire[`DATA_BUS] iei_s_e_4_0;
 wire[`DATA_BUS] iei_s_e_3_0;
 wire[`DATA_BUS] iei_z_e_7_0;
 
-//******************************************
 wire ieo_ram_en;
 wire ieo_ram_op;
 
@@ -359,8 +366,6 @@ wire[`DATA_BUS] ieo_z_e_7_0;
 wire[`REG_ADDR_BUS] ieo_reg_addr_rx;
 wire[`REG_ADDR_BUS] ieo_reg_addr_ry;
 wire[`REG_ADDR_BUS] ieo_reg_addr_rz;
-
-//*************************************
 
 assign iei_pause = p_c_out_ie_pause;
 assign iei_inst = iio_inst;
@@ -391,6 +396,7 @@ assign iei_s_e_7_0 = ex_out_s_e_7_0;
 assign iei_s_e_4_0 = ex_out_s_e_4_0;
 assign iei_s_e_3_0 = ex_out_s_e_3_0;
 assign iei_z_e_7_0 = ex_out_z_e_7_0;
+
 ID_EXE ie(
     .rst(rst),
     .clk_50MHz(clk_50MHz),
@@ -427,7 +433,8 @@ ID_EXE ie(
     .n_ie_s_e_4_0(iei_s_e_4_0),
     .n_ie_s_e_3_0(iei_s_e_3_0),
     .n_ie_z_e_7_0(iei_z_e_7_0),
-//*****************************
+
+
     .ie_WB_DATA_op(ieo_wb_data_op),
     .ie_REG_op(ieo_reg_op),
 
@@ -460,10 +467,11 @@ ID_EXE ie(
     .ie_REG_ADDR_RX(ieo_reg_addr_rx),
     .ie_REG_ADDR_RY(ieo_reg_addr_ry),
     .ie_REG_ADDR_RZ(ieo_reg_addr_rz)
+);
 
-    );
-
-//############# EXE ###################
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// EXE
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 //forward
 wire[`DATA_BUS] reg1_forward_data;
@@ -521,7 +529,7 @@ Forward forward_ctrl(
 
     .ieo_ih(ieo_ih),
     .emi_ih(forward_out_ih)
-    );
+);
 
 //im mux
 wire[`DATA_BUS] im_out;
@@ -533,7 +541,7 @@ Im_Mux im_mux(
     .im_z_e7_0(ieo_z_e_7_0),
     .im_op(ieo_im_op),
     .im_out(im_out)
-    );
+);
 
 //opA mux
 wire[`DATA_BUS] alu_a;
@@ -546,7 +554,7 @@ ALU_A_Mux alu_a_mux(
     .ALU_A_FOWD_en(reg1_forward_enable),
     .ALU_A_op(ieo_alu_a_op),
     .ALU_A_data(alu_a)
-    );
+);
 
 //opB mux
 wire[`DATA_BUS] alu_b;
@@ -557,7 +565,7 @@ ALU_B_Mux alu_b_mux(
     .ALU_B_FOWD_en(reg2_forward_enable),
     .ALU_B_op(ieo_alu_b_op),
     .ALU_B_data(alu_b)
-    );
+);
 
 
 //wb_addr mux
@@ -567,7 +575,7 @@ WB_Addr_Mux wb_addr_Mux(
     .ry_addr(ieo_reg_addr_ry),
     .rz_addr(ieo_reg_addr_rz),
     .wb_addr(wb_addr)
-    );
+);
 
 //alu
 wire zero;
@@ -578,7 +586,7 @@ ALU alu(
     .op(ieo_alu_op),
     .y(alu_answer),
     .zero(zero)
-    );
+);
 
 //jump add
 wire[`DATA_BUS] jump_add_pc;
@@ -586,7 +594,7 @@ Jump_Add jump_add(
     .old_pc(ieo_pc),
     .im(im_out),
     .new_pc(jump_add_pc)
-    );
+);
 
 //jump data mux
 Jump_Data_Mux jump_data_mux(
@@ -594,14 +602,14 @@ Jump_Data_Mux jump_data_mux(
     .alu_answer(alu_answer),
     .jump_data_op(ieo_jump_data_op),
     .jump_addr(jump_addr)
-    );
+);
 
 //jump en mux
 Jump_En_Mux jump_en_mux(
     .zero(zero),
     .jump_en_op(ieo_jump_en_op),
     .jump_en(jump_en)
-    );
+);
 
 //ram data mux 
 
@@ -615,10 +623,12 @@ RAM_Data_Mux ram_data_mux(
     .RAM_data_op(ieo_ram_data_op),
     .forward_enable(mux_forward_enable),
     .RAM_data(ram_data)
-    );
-//############# EXE end
+);
 
-//############# EXE/MEM ###############
+
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// EXE / MEM
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 wire emi_ram_en;
 wire emi_ram_op;
@@ -665,10 +675,12 @@ EXE_MEM em(
     .em_ALU_data(emo_alu_data),
     .em_RAM_WB_data(emo_ram_wb_data),
     .em_WB_addr(emo_wb_addr)
-    );
-//############# end
+);
 
-//############# MEM ###################
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// MEM
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
 wire[`DATA_BUS] ram_out_data;
 wire[`ADDR_BUS] ram_in_addr;
 assign ram_in_addr = {2'b00, emo_alu_data};
@@ -677,43 +689,84 @@ wire[`VGA_ROW_BUS] vga_row;
 wire[`VGA_COL_BUS] vga_col;
 wire[`VGA_DATA_BUS] vga_data;
 
-ram RAM(
-    .rst(rst),
-    .clk_50MHz(clk_50MHz),
-    .clk_25MHz(clk_25MHz),
+if(`SIMULATION) begin
+    ram RAM(
+        .rst(rst),
+        .clk_50MHz(clk_50MHz),
+        .clk_25MHz(clk_25MHz),
 
-    .sram1_data(ram1_data),
-    .sram1_addr(ram1_addr),
-    .sram1_en(ram1_en),
-    .sram1_oe(ram1_oe),
-    .sram1_we(ram1_we),
+        .sram1_data(ram1_data),
+        .sram1_addr(ram1_addr),
+        .sram1_en(ram1_en),
+        .sram1_oe(ram1_oe),
+        .sram1_we(ram1_we),
 
-    .sram2_data(ram2_data),
-    .sram2_addr(ram2_addr),
-    .sram2_en(ram2_en),
-    .sram2_oe(ram2_oe),
-    .sram2_we(ram2_we),
-    
-    .data_o(ram_out_data),
-    .data_i(emo_ram_wb_data),
-    .addr(ram_in_addr),
-    .op(emo_ram_op),
-    .en(emo_ram_en),
-    .pc(pc_out_pc),
-    .inst(ram1_out_inst),
-    
-    .tsre(tsre),
-    .tbre(tbre),
-    .data_ready(data_ready),
+        .sram2_data(ram2_data),
+        .sram2_addr(ram2_addr),
+        .sram2_en(ram2_en),
+        .sram2_oe(ram2_oe),
+        .sram2_we(ram2_we),
+        
+        .data_o(ram_out_data),
+        .data_i(emo_ram_wb_data),
+        .addr(ram_in_addr),
+        .op(emo_ram_op),
+        .en(emo_ram_en),
+        .pc(pc_out_pc),
+        .inst(ram1_out_inst),
+        
+        .tsre(tsre),
+        .tbre(tbre),
+        .data_ready(data_ready),
 
-    .vga_col(vga_col),
-    .vga_row(vga_row),
-    .vga_data(vga_data),
+        .vga_col(vga_col),
+        .vga_row(vga_row),
+        .vga_data(vga_data),
 
-    .wrn(wrn),
-    .rdn(rdn),
-    .ram_pause(ram_pause)
+        .wrn(wrn),
+        .rdn(rdn),
+        .ram_pause(ram_pause)
     );
+end
+else begin
+    ram RAM(
+        .rst(rst),
+        .clk_50MHz(clk_50MHz),
+        .clk_25MHz(clk_25MHz),
+
+        .sram1_data(ram1_data),
+        .sram1_addr(ram1_addr),
+        .sram1_en(ram1_en),
+        .sram1_oe(ram1_oe),
+        .sram1_we(ram1_we),
+
+        .sram2_data(ram2_data),
+        .sram2_addr(ram2_addr),
+        .sram2_en(ram2_en),
+        .sram2_oe(ram2_oe),
+        .sram2_we(ram2_we),
+        
+        .data_o(ram_out_data),
+        .data_i(emo_ram_wb_data),
+        .addr(ram_in_addr),
+        .op(emo_ram_op),
+        .en(emo_ram_en),
+        .pc(pc_out_pc),
+        .inst(ram1_out_inst),
+        
+        .tsre(tsre),
+        .tbre(tbre),
+        .data_ready(data_ready),
+
+        .vga_col(vga_col),
+        .vga_row(vga_row),
+        .vga_data(vga_data),
+
+        .wrn(wrn),
+        .rdn(rdn),
+        .ram_pause(ram_pause)
+    );
+end
 
 vga VGA(
     .rst(rst),
@@ -725,10 +778,12 @@ vga VGA(
     .vga_rgb(vga_rgb),
     .vga_row_ctrl(vga_row_ctrl),
     .vga_col_ctrl(vga_col_ctrl)
-    );
+);
 
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// MEM / WB
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-//############# MEM/WB ################
 wire[`WB_DATA_OP_BUS] mwi_wb_data_op;
 wire[`REG_OP_BUS] mwi_reg_op;
 wire[`DATA_BUS] mwi_ih;
@@ -766,9 +821,12 @@ MEM_WB mwm_wb(
     .mw_ALU_data(mwo_alu_data),
     .mw_RAM_data(mwo_ram_data),
     .mw_WB_addr(mwo_wb_addr)
-   );
-//############# end
-//############# WB ####################
+);
+
+
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+// WB
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 //wb data mux
 WB_Data_Mux wb_data_mux(
@@ -778,16 +836,14 @@ WB_Data_Mux wb_data_mux(
     .wb_IH(mwo_ih),
     .wb_data_op(mwo_wb_data_op),
     .wb_data(wb_data)
-    );
+);
 
 initial begin
-    // $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x %x %x",
-    //     $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
-    //                     , ieo_pc
-    //                     , wb_addr
-    //                     , wb_data
-    //                     , mwo_reg_op
-    //     );
+    $monitor("%dns c=%x,r=%x, i=%x, pc=%x, watch=%x %x",
+        $stime, clk_50MHz, rst, ram1_out_inst, pc_out_pc
+                        , wb_addr
+                        , wb_data
+        );
 end
 
 endmodule
