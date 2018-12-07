@@ -48,43 +48,25 @@ reg state;
 reg com;
 reg ram1_en;
 reg ram2_op;
-reg sram1_r_data;
+wire[`DATA_BUS] sram1_r_data;
 
-reg [31:0] sram1_data_buffer;
+reg[31:0] sram1_data_buffer;
 reg[`ADDR_BUS] vga_addr;
 reg vga_enable;
 reg[31:0] vga_buffer;
 reg[7:0] vga_end;
 
-// parameter S_EMPTY = 1'b0,
-//           S_ENDDO = 1'b1;
 assign inst = (ram2_op == `PC)? sram2_data : `INST_ZERO;
 assign data_o = (addr<18'h8000) ? sram2_data : sram1_r_data;
 assign sram2_data = (ram2_op == `RAM && op == `RAM_OP_WR ) ? data_i : 16'bz;
-assign sram1_data = (clk_25MHz == 1'b0 && clk_50MHz == 1'b0) ? 16'bz :((addr == 18'hBF01) ? {14'b0, data_ready, (tsre && tbre)}: ((addr >18'h7FFF && (op == `RAM_OP_WR)) ? data_i : 16'bz));
-// always @(*) begin
-//     if (addr == 18'hBF01) begin
-//         sram1_data <= {14'b0, data_ready, (tsre && tbre)};
-//     end
-//     else if (addr >18'h7FFF && op == `RAM_OP_WR) begin
-//         sram1_data <= data_i;
-//     end else begin
-//         sram1_data <= 18'hz;
-//     end
-// end
+assign sram1_data = (clk_25MHz == 1'b1) ? ((addr == 18'hBF01) ? {14'b0, data_ready, (tsre && tbre)}: ((addr >18'h7FFF && (op == `RAM_OP_WR)) ? data_i : 16'hz)) : 16'hz;
+assign sram1_r_data = (clk_25MHz == 1'b1) ? sram1_data : sram1_r_data;
+//assign sram1_data_buffer = (clk_25MHz == 1'b0) ? sram1_data : sram1_data_buffer;
 
-always @(negedge clk_25MHz) begin
-    sram1_r_data = sram1_data; 
+always @(posedge clk_25MHz) begin
+    sram1_data_buffer = sram1_data;
 end
 
-
-// always @(*) begin
-//     if (sram1_addr == vga_addr) begin
-//         sram1_data_buffer = sram1_data;
-//     end
-// end
-
-//state machine
 always @(*) begin
     if (en == `RAM_ENABLE && addr == 18'hBF00) begin
         ram1_en = `DISABLE;
@@ -98,7 +80,7 @@ always @(*) begin
         com = `DISABLE;
         ram_pause = `PAUSE_ENABLE;
     end
-    else if(en == `RAM_ENABLE ) begin
+    else if(en == `RAM_ENABLE) begin
         ram1_en = `ENABLE;
         ram2_op = `PC;
         com =`DISABLE; 
@@ -111,53 +93,37 @@ always @(*) begin
         ram_pause = `PAUSE_DISABLE;
     end
 end
+
 //sram1_r&w
 always @(*) begin
-
-    if (ram1_en == `ENABLE) begin
-        if (op == `RAM_OP_RD)
-        begin
+    if (clk_25MHz == 1'b1 && ram1_en == `ENABLE) begin
+        if (op == `RAM_OP_RD) begin
             sram1_en = 1'b0;
             sram1_oe = 1'b0;
             sram1_we = 1'b1;
-            if (clk_25MHz == 1'b1 )
-                sram1_addr = vga_addr;
-            else begin
-                sram1_addr = addr;
-            end
+            sram1_addr = addr;
         end
-        else//write
-        begin
+        else begin
             sram1_en = 1'b0;
-            if (clk_25MHz == 1'b1 && clk_50MHz ==1'b1)
-            begin
-                sram1_oe = 1'b1;
-                sram1_addr = addr;
-                sram1_we = 1'b0;
-            end
-            else begin
-                sram1_oe = 1'b0;
-                sram1_we = 1'b1;
-                sram1_addr = vga_addr;
-            end
-        end
-    end
-    else 
-    begin
-        if (clk_25MHz == 1'b1)begin
-            sram1_en = 1'b0;
-            sram1_oe = 1'b0;
-            sram1_we = 1'b1;
-            sram1_addr = vga_addr;
-        end else begin
-            sram1_en = 1'b1;
             sram1_oe = 1'b1;
-            sram1_we = 1'b1;
+            sram1_addr = addr;
+            if (clk_50MHz == 1'b1)
+                sram1_we = 1'b0;
+            else 
+                sram1_we = 1'b1;
         end
     end
-
-
-    
+    else if(clk_25MHz == 1'b1) begin
+        sram1_en = 1'b1;
+        sram1_oe = 1'b1;
+        sram1_we = 1'b1;
+    end
+    else begin 
+        sram1_en = 1'b0;
+        sram1_oe = 1'b0;
+        sram1_we = 1'b1;
+        sram1_addr = vga_addr;
+    end
 end
 
 //sram2 r&w
