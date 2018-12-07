@@ -6,7 +6,6 @@
 !*.vssx
 !*.xlsx
 !ram.v
-!*test*
 !*.py
 !*.v
 !CPU.ucf

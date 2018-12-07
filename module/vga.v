@@ -18,8 +18,10 @@ module vga(
     );
 
     if(vga_row >= 656 && vga_row <= 764) begin
+        
     end
     if(vga_col >= 492 && vga_col <= 512) begin
+
     end
     if ((vga_row < 640) && (vga_col < 480)) begin
         vga_rgb = vga_data;
