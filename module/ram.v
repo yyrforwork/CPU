@@ -59,28 +59,28 @@ assign sram1_data = (addr == 18'hBF01) ? {14'b0, data_ready, (tsre && tbre)}: ((
 
 always @(*) begin
     if (en == `RAM_ENABLE && addr == 18'hBF00) begin
-        ram1_en = `DISABLE;
-        ram2_op = `PC;
-        com = `ENABLE;
-        ram_pause = `PAUSE_DISABLE;
+        ram1_en <= `DISABLE;
+        ram2_op <= `PC;
+        com <= `ENABLE;
+        ram_pause <= `PAUSE_DISABLE;
     end
     else if (en == `RAM_ENABLE && addr < 18'h8000) begin
-        ram1_en = `DISABLE;
-        ram2_op = `RAM;
-        com = `DISABLE;
-        ram_pause = `PAUSE_ENABLE;
+        ram1_en <= `DISABLE;
+        ram2_op <= `RAM;
+        com <= `DISABLE;
+        ram_pause <= `PAUSE_ENABLE;
     end
     else if(en == `RAM_ENABLE) begin
-        ram1_en = `ENABLE;
-        ram2_op = `PC;
-        com =`DISABLE; 
-        ram_pause = `PAUSE_DISABLE;
+        ram1_en <= `ENABLE;
+        ram2_op <= `PC;
+        com <=`DISABLE; 
+        ram_pause <= `PAUSE_DISABLE;
     end
     else begin
-        ram1_en = `DISABLE;
-        ram2_op = `PC;
-        com = `DISABLE;
-        ram_pause = `PAUSE_DISABLE;
+        ram1_en <= `DISABLE;
+        ram2_op <= `PC;
+        com <= `DISABLE;
+        ram_pause <= `PAUSE_DISABLE;
     end
 end
 
@@ -88,51 +88,51 @@ end
 always @(*) begin
     if (ram1_en == `ENABLE) begin
         if (op == `RAM_OP_RD) begin
-            sram1_en = 1'b0;
-            sram1_oe = 1'b0;
-            sram1_we = 1'b1;
-            sram1_addr = addr;
+            sram1_en <= 1'b0;
+            sram1_oe <= 1'b0;
+            sram1_we <= 1'b1;
+            sram1_addr <= addr;
         end
         else begin
-            sram1_en = 1'b0;
-            sram1_oe = 1'b1;
-            sram1_addr = addr;
+            sram1_en <= 1'b0;
+            sram1_oe <= 1'b1;
+            sram1_addr <= addr;
             if (clk_50MHz == 1'b1)
-                sram1_we = 1'b0;
+                sram1_we <= 1'b0;
             else 
-                sram1_we = 1'b1;
+                sram1_we <= 1'b1;
         end
     end
     else begin
-        sram1_en = 1'b1;
-        sram1_oe = 1'b1;
-        sram1_we = 1'b1;
+        sram1_en <= 1'b1;
+        sram1_oe <= 1'b1;
+        sram1_we <= 1'b1;
     end
 end
 
 //sram2 r&w
 always @(*) begin
     if (ram2_op == `PC) begin
-        sram2_en = 1'b0;
-        sram2_oe = 1'b0;
-        sram2_we = 1'b1;
-        sram2_addr = {2'b00, pc};
+        sram2_en <= 1'b0;
+        sram2_oe <= 1'b0;
+        sram2_we <= 1'b1;
+        sram2_addr <= {2'b00, pc};
     end
     else if (ram2_op == `RAM) begin
         if (op == `RAM_OP_RD) begin
-            sram2_en = 1'b0;
-            sram2_oe = 1'b0;
-            sram2_we = 1'b1;
-            sram2_addr = addr;
+            sram2_en <= 1'b0;
+            sram2_oe <= 1'b0;
+            sram2_we <= 1'b1;
+            sram2_addr <= addr;
         end
         else begin
-            sram2_en = 1'b0;
-            sram2_oe = 1'b1;
-            sram2_addr = addr;
-            if (clk_50MHz == 1'b0)
-                sram2_we = 1'b1;
+            sram2_en <= 1'b0;
+            sram2_oe <= 1'b1;
+            sram2_addr <= addr;
+            if (clk_50MHz == 1'b1)
+                sram2_we <= 1'b0;
             else
-                sram2_we = 1'b0;
+                sram2_we <= 1'b1;
         end
     end
 end
@@ -143,21 +143,21 @@ always @(*) begin
         if (sram1_en ==1'b1 && sram1_we == 1'b1 && sram1_oe == 1'b1 ) begin
             if (op == `RAM_OP_RD) begin
                 if (data_ready == 1'b1)
-                    rdn = 1'b0;
-                wrn = 1'b1;
+                    rdn <= 1'b0;
+                wrn <= 1'b1;
             end
             else begin //if (op == `RAM_OP_WR)
-                rdn = 1'b1;
+                rdn <= 1'b1;
                 if (clk_50MHz == 1'b0)
-                    wrn = 1'b0;
+                    wrn <= 1'b0;
                 else
-                    wrn = 1'b1;
+                    wrn <= 1'b1;
             end
         end
     end
     else begin
-        rdn = 1'b1;
-        wrn = 1'b1;
+        rdn <= 1'b1;
+        wrn <= 1'b1;
     end
 end
 

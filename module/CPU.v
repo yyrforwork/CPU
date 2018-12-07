@@ -801,7 +801,7 @@ assign mwi_wb_addr = emo_wb_addr;
 
 MEM_WB mwm_wb(
     .rst(rst),
-    .clk_50MHz(clk_25MHz),
+    .clk_50MHz(clk_50MHz),
     
     .n_mw_WB_data_op(mwi_wb_data_op),
     .n_mw_REG_op(mwi_reg_op),
