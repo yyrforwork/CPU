@@ -177,9 +177,10 @@ always @(negedge clk_50MHz or negedge rst) begin
         vga_data_reg[4] = 16'hFFFF;
         vga_data_reg[5] = 16'hFFFF;
         vga_data_reg[6] = 16'hFF00;
-    end
-    if (op == `RAM_OP_WR && addr >= `VGA_ADDR_BEG && addr <= `VGA_ADDR_END) begin
-        vga_data_reg[addr-`VGA_ADDR_BEG] = data_i;
+    end else begin
+        if (op == `RAM_OP_WR && addr >= `VGA_ADDR_BEG && addr <= `VGA_ADDR_END) begin
+            vga_data_reg[addr-`VGA_ADDR_BEG] = data_i;
+        end
     end
 end
 

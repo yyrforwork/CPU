@@ -32,7 +32,7 @@
 `include "WB_Data_Mux.v"
 `include "vga.v"
 
-`define SIMULATION 0
+// `define SIMULATION 1
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // CPU
@@ -689,7 +689,45 @@ wire[`VGA_ROW_BUS] vga_row;
 wire[`VGA_COL_BUS] vga_col;
 wire[`VGA_DATA_BUS] vga_data;
 
-if(`SIMULATION) begin
+`ifdef SIMULATION
+    ram RAM_SIM(
+        .rst(rst),
+        .clk_50MHz(clk_50MHz),
+        .clk_25MHz(clk_25MHz),
+
+        .sram1_data(ram1_data),
+        .sram1_addr(ram1_addr),
+        .sram1_en(ram1_en),
+        .sram1_oe(ram1_oe),
+        .sram1_we(ram1_we),
+
+        .sram2_data(ram2_data),
+        .sram2_addr(ram2_addr),
+        .sram2_en(ram2_en),
+        .sram2_oe(ram2_oe),
+        .sram2_we(ram2_we),
+        
+        .data_o(ram_out_data),
+        .data_i(emo_ram_wb_data),
+        .addr(ram_in_addr),
+        .op(emo_ram_op),
+        .en(emo_ram_en),
+        .pc(pc_out_pc),
+        .inst(ram1_out_inst),
+        
+        .tsre(tsre),
+        .tbre(tbre),
+        .data_ready(data_ready),
+
+        .vga_col(vga_col),
+        .vga_row(vga_row),
+        .vga_data(vga_data),
+
+        .wrn(wrn),
+        .rdn(rdn),
+        .ram_pause(ram_pause)
+    );
+`else
     ram RAM(
         .rst(rst),
         .clk_50MHz(clk_50MHz),
@@ -727,46 +765,7 @@ if(`SIMULATION) begin
         .rdn(rdn),
         .ram_pause(ram_pause)
     );
-end
-else begin
-    ram RAM(
-        .rst(rst),
-        .clk_50MHz(clk_50MHz),
-        .clk_25MHz(clk_25MHz),
-
-        .sram1_data(ram1_data),
-        .sram1_addr(ram1_addr),
-        .sram1_en(ram1_en),
-        .sram1_oe(ram1_oe),
-        .sram1_we(ram1_we),
-
-        .sram2_data(ram2_data),
-        .sram2_addr(ram2_addr),
-        .sram2_en(ram2_en),
-        .sram2_oe(ram2_oe),
-        .sram2_we(ram2_we),
-        
-        .data_o(ram_out_data),
-        .data_i(emo_ram_wb_data),
-        .addr(ram_in_addr),
-        .op(emo_ram_op),
-        .en(emo_ram_en),
-        .pc(pc_out_pc),
-        .inst(ram1_out_inst),
-        
-        .tsre(tsre),
-        .tbre(tbre),
-        .data_ready(data_ready),
-
-        .vga_col(vga_col),
-        .vga_row(vga_row),
-        .vga_data(vga_data),
-
-        .wrn(wrn),
-        .rdn(rdn),
-        .ram_pause(ram_pause)
-    );
-end
+`endif
 
 vga VGA(
     .rst(rst),
