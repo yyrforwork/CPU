@@ -48,6 +48,7 @@ reg state;
 reg com;
 reg ram1_en;
 reg ram2_op;
+<<<<<<< HEAD
 wire[`DATA_BUS] sram1_r_data;
 
 reg[31:0] sram1_data_buffer;
@@ -85,14 +86,51 @@ always @(*) begin
         ram2_op = `PC;
         com =`DISABLE; 
         ram_pause = `PAUSE_DISABLE;
+=======
+// parameter S_EMPTY = 1'b0,
+//           S_ENDDO = 1'b1;
+assign inst = (rarm2_op == `PC)? sram2_data : `INST_ZERO;
+assign data_o = (addr<18'h8000) ? sram2_data : sram1_data;
+assign sram2_data = (ram2_op == `RAM && op == `RAM_OP_WR ) ? data_i : 16'bz;
+assign sram1_data = (addr >18'h7FFF && op == `RAM_OP_WR) ? data_i : 16'bz;
+
+//state machine
+always @(*) begin
+    if (en == `RAM_ENABLE) begin
+        if (addr == 18'hBF01)
+        begin
+            ram1_en = `DISABLE;
+            ram2_op = `PC;
+            com = `ENABLE;
+            ram_pause = `PAUSE_DISABLE;
+        end
+        else
+            if (addr < 18'h8000)
+            begin
+                ram1_en = `DISABLE;
+                ram2_op = `RAM;
+                com = `DISABLE;
+                ram_pause = `PAUSE_ENABLE;
+            end
+            else
+                begin
+                    ram1_en = `ENABLE;
+                    ram2_op = `PC;
+                    com =`DISABLE; 
+                    ram_pause = `PAUSE_DISABLE;
+                end
+>>>>>>> parent of c628aa5... final basic verion
     end
-    else begin 
+    else 
         ram1_en = `DISABLE;
         ram2_op = `PC;
         com = `DISABLE;
         ram_pause = `PAUSE_DISABLE;
     end
+<<<<<<< HEAD
 end
+=======
+>>>>>>> parent of c628aa5... final basic verion
 
 //sram1_r&w
 always @(*) begin

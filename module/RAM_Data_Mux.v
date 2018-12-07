@@ -25,7 +25,7 @@ always @(*) begin
             `RAM_DATA_OP_REGA: RAM_data <= data_REGA;
             `RAM_DATA_OP_REGB: RAM_data <= data_REGB;
             `RAM_DATA_OP_RA:   RAM_data <= data_RA;
-            `RAM_DATA_OP_NOP:  RAM_data <= 16'h0101;
+            `RAM_DATA_OP_NOP:  RAM_data <= `DATA_ZERO;
         endcase
     end
 end
