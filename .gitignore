@@ -1,13 +1,2 @@
-\~*
-*
-!module/
-!test/
-!*.vsdx
-!*.vssx
-!*.xlsx
-!ram.v
-!*.py
-!*.v
-!CPU.ucf
-!*.txt
-*\~
+test.o
+test/data
